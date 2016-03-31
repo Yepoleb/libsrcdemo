@@ -1,19 +1,23 @@
 #include <string>
 #include <stdint.h>
+#include <fstream>
+#include <cstring>
+#include <exception>
+#include <iostream>
 
 struct demoheader_t
 {
     std::string demofilestamp; // Should be HL2DEMO
-    uint32_t demoprotocol;     // Should be DEMO_PROTOCOL
-    uint32_t networkprotocol;  // Should be PROTOCOL_VERSION
+    int32_t demoprotocol;     // Should be DEMO_PROTOCOL
+    int32_t networkprotocol;  // Should be PROTOCOL_VERSION
     std::string servername;    // Name of server
     std::string clientname;    // Name of client who recorded the game
     std::string mapname;       // Name of map
     std::string gamedirectory; // Name of game directory (com_gamedir)
     float playback_time;       // Time of track
-    uint32_t playback_ticks;   // # of ticks in track
-    uint32_t playback_frames;  // # of frames in track
-    uint32_t signonlength;     // length of sigondata in bytes
+    int32_t playback_ticks;   // # of ticks in track
+    int32_t playback_frames;  // # of frames in track
+    int32_t signonlength;     // length of sigondata in bytes
 };
 
 enum class MessageType
@@ -36,95 +40,138 @@ struct DemoMessage
     std::vector<uint8_t> data;
 };
 
-class DemoFile
+class DemoException : public std::runtime_error
 {
-private:
-    
+    virtual const char* what() const throw()
+    {
+        return "Failed to parse d            emo."
+    }
+}
+
+std::vector<char> ReadBytes(std::istream& stream, const size_t& length)
+{
+    std::vector<char> bytes;
+    bytes.reserve(length);
+    stream.read(bytes.data(), length);
+    return bytes;
+}
+
+std::string ReadString(std::istream& stream, const size_t& length)
+{
+    char* temp = new char[length+1];
+    stream.read(temp, length);
+    temp[length] = '\0';
+    std::string str(temp);
+    delete temp;
+    return str;
+}
+
+int32_t ReadInt8(std::istream& stream)
+{
+    int8_t value;
+    stream.read(&value, sizeof(int8_t));
+    return value;
+}
+
+int32_t ReadInt32(std::istream& stream)
+{
+    int32_t value;
+    stream.read(reinterpret_cast<char*>(&value), sizeof(int32_t));
+    return value;
+}
+
+float ReadFloat(std::istream& stream)
+{
+    float value;
+    stream.read(reinterpret_cast<char*>(&value), sizeof(float));
+    return value;
 }
 
 class DemoFile
 {
-    Stream fstream;
-    public DemoInfo Info;
-    public List<DemoMessage> Messages;
+private:
+    std::ifstream m_file;
+    DemoInfo m_info;
+    std::vector<DemoMessage> m_messages;
+}
 
-    public DemoFile(Stream s)
+class DemoFile
+{
+    public DemoFile(std::ifstream s)
     {
-        fstream = s;
-        Messages = new List<DemoMessage>();
+        m_file = s;
+        //m_messages = std::vector<DemoMessage>;
         Parse();
     }
 
     void Parse()
     {
-        var reader = new BinaryReader(fstream);
-        var id = reader.ReadBytes(8);
+        m_file.seekg(0, std::ios::end);
+        m_info.demofilestamp = ReadString(m_file, 8);
 
-        if (Encoding.ASCII.GetString(id) != "HL2DEMO\0")
-            throw new Exception("Unsupported file format.");
+        if (demofilestamp != "HL2DEMO") {
+            std::cerr << "Unsupported file format." << std::endl;
+            throw DemoException;
+        }
 
-        Info.DemoProtocol = reader.ReadInt32();
-        if (Info.DemoProtocol >> 8 > 0)
-            throw new Exception("Demos recorded on L4D branch games are currently unsupported.");
+        m_info.demoprotocol = ReadInt32(m_file);
+        if (m_info.demoprotocol >> 8 > 0) {
+            std::cerr << "Demos recorded on L4D branch games are currently unsupported." << std::endl;
+            throw DemoException;
+        }
 
-        Info.NetProtocol = reader.ReadInt32();
+        m_info.networkprotocol = ReadInt32(m_file);
 
-        Info.ServerName = new string(reader.ReadChars(260)).Replace("\0", "");
-        Info.ClientName = new string(reader.ReadChars(260)).Replace("\0", "");
-        Info.MapName = new string(reader.ReadChars(260)).Replace("\0", "");
-        Info.GameDirectory = new string(reader.ReadChars(260)).Replace("\0", "");
+        m_info.servername = ReadString(m_file, 260);
+        m_info.clientname = ReadString(m_file, 260);
+        m_info.mapname = ReadString(m_file, 260);
+        m_info.gamedirectory = ReadString(m_file, 260);
 
-        Info.Seconds = reader.ReadSingle();
-        Info.TickCount = reader.ReadInt32();
-        Info.FrameCount = reader.ReadInt32();
+        m_info.playback_time = ReadFloat(m_file);
+        m_info.playback_ticks = ReadInt32(m_file);
+        m_info.playback_frames = ReadInt32(m_file);
 
-        Info.SignonLength = reader.ReadInt32();
+        m_info.signonlength = ReadInt32(m_file);
 
         while (true)
         {
-            var msg = new DemoMessage {Type = (MessageType) reader.ReadByte()};
-            if (msg.Type == MessageType.Stop)
+            DemoMessage msg;
+            msg.type = ReadInt8(m_file);
+            if (msg.type == MessageType::Stop)
                 break;
-            msg.Tick = reader.ReadInt32();
+            msg.tick = ReadInt32(m_file);
 
-            switch (msg.Type)
+            switch (msg.type)
             {
-                case MessageType.Signon:
-                case MessageType.Packet:
-                case MessageType.ConsoleCmd:
-                case MessageType.UserCmd:
-                case MessageType.DataTables:
-                case MessageType.StringTables:
-                    if (msg.Type == MessageType.Packet || msg.Type == MessageType.Signon)
-                        reader.BaseStream.Seek(0x54, SeekOrigin.Current); // command/sequence info
-                    else if (msg.Type == MessageType.UserCmd)
-                        reader.BaseStream.Seek(0x4, SeekOrigin.Current); // unknown
-                    msg.Data = reader.ReadBytes(reader.ReadInt32());
+                case MessageType::Signon:
+                case MessageType::Packet:
+                case MessageType::ConsoleCmd:
+                case MessageType::UserCmd:
+                case MessageType::DataTables:
+                case MessageType::StringTables:
+                    if (msg.type == MessageType::Packet or msg.type == MessageType::Signon)
+                        m_file.seekg(0x54, std::ios::cur); // command/sequence info
+                    else if (msg.type == MessageType::UserCmd)
+                        m_file.seekg(0x4, std::ios::cur); // unknown
+                    size_t data_size = ReadInt32(m_file);
+                    msg.data = ReadBytes(m_file, data_size);
                     break;
-                case MessageType.SyncTick:
-                    msg.Data = new byte[0]; // lol wut
+                case MessageType::SyncTick:
+                    msg.data = std::vector<char>(); // lol wut
                     break;
                 default:
-                    throw new Exception("Unknown demo message type encountered.");
+                    std::cerr << "Unknown demo message type encountered." << std::endl;
+                    throw DemoException;
             }
 
-            Messages.Add(msg);
+            m_messages.push_back(msg);
         }
     }
 }
 
-public class UserCmd
+class UserCmd
 {
-/*
-    static string ParseButtons(uint buttons)
-    {
-        string res = "(none)";
-        // TODO: IMPLEMENT
-        return res;
-    }
-*/
-
-    public static void ParseIntoTreeNode(byte[] data, TreeNode node)
+    static void ParseIntoTreeNode(byte[] data, TreeNode node)
     {
         var bb = new BitBuffer(data);
         if (bb.ReadBool()) node.Nodes.Add("Command number: " + bb.ReadBits(32));
