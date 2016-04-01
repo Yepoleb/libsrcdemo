@@ -1,19 +1,10 @@
+#pragma once
 #include <string>
 #include <stdint.h>
 #include <vector>
 #include <exception>
 
-enum class MessageType
-{
-    Signon = 1,
-    Packet,
-    SyncTick,
-    ConsoleCmd,
-    UserCmd,
-    DataTables,
-    Stop,
-    StringTables
-};
+#include "DemoMessage.hpp"
 
 struct DemoHeader
 {
@@ -30,48 +21,6 @@ struct DemoHeader
     int32_t signonlength;
 };
 
-struct DemoMessageBase
-{
-    MessageType type;
-    int tick;
-};
-
-struct DemoMessage : DemoMessageBase
-{
-    char* data;
-    size_t data_size;
-};
-
-struct ConsoleCmdMsg : DemoMessageBase
-{
-    std::string command;
-};
-
-struct QAngle
-{
-    float x;
-    float y;
-    float z;
-}
-
-struct UserCmdMsg : DemoMessageBase
-{
-    int32_t command_number;
-    int32_t tick_count;
-    QAngle viewangles;
-    float forwardmove;
-    float sidemove;
-    float upmove;
-    int32_t buttons;
-    int8_t impulse;
-    int32_t weaponselect;
-    int32_t weaponsubtype;
-    int32_t random_seed;
-    int16_t mousedx;
-    int16_t mousedy;
-    bool hasbeenpredicted;
-}
-
 class DemoException : public std::exception
 {
     virtual const char* what() const throw()
@@ -84,11 +33,11 @@ class DemoFile
 {
 public:
     DemoFile(std::string filename);
-    DemoHeader getHeader() { return m_header; };
-    std::vector<DemoMessage> getMessages() { return m_messages; };
+    DemoHeader getHeader() const { return m_header; };
+    std::vector<DemoMessage*> getMessages() const { return m_messages; };
 private:
     DemoHeader m_header;
-    std::vector<DemoMessage> m_messages;
+    std::vector<DemoMessage*> m_messages;
 };
 
 char* ReadBytes(std::istream& stream, const size_t& length);

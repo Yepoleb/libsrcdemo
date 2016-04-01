@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "DemoFile.hpp"
+#include "DemoMessage.hpp"
 
 DemoFile::DemoFile(std::string filename)
 {
@@ -37,13 +38,15 @@ DemoFile::DemoFile(std::string filename)
 
     while (true)
     {
-        DemoMessage msg;
-        msg.type = static_cast<MessageType>(ReadInt8(file));
-        if (msg.type == MessageType::Stop)
+        DemoMessage* msg;
+        MessageType type = static_cast<MessageType>(ReadInt8(file));
+        if (type == MessageType::Stop)
             break;
-        msg.tick = ReadInt32(file);
+        int32_t tick = ReadInt32(file);
+        char* data;
+        size_t data_size;
 
-        switch (msg.type)
+        switch (type)
         {
             case MessageType::Signon:
             case MessageType::Packet:
@@ -51,27 +54,55 @@ DemoFile::DemoFile(std::string filename)
             case MessageType::UserCmd:
             case MessageType::DataTables:
             case MessageType::StringTables: {
-                if (msg.type == MessageType::Packet or msg.type == MessageType::Signon)
+                if (type == MessageType::Packet or type == MessageType::Signon)
                     file.seekg(0x54, std::ios::cur); // command/sequence info
-                else if (msg.type == MessageType::UserCmd)
+                else if (type == MessageType::UserCmd)
                     file.seekg(0x4, std::ios::cur); // unknown
-                size_t data_size = ReadInt32(file);
-                msg.data = ReadBytes(file, data_size);
-                msg.data_size = data_size;
-                //std::cout << "data_size " << data_size << std::endl;
+                data_size = ReadInt32(file);
+                data = ReadBytes(file, data_size);
                 break;
             }
             case MessageType::SyncTick: {
-                msg.data = nullptr; // lol wut
-                msg.data_size = 0;
+                data = nullptr; // lol wut
+                data_size = 0;
                 break;
             }
             default:
                 std::cerr << "Unknown demo message type encountered." << std::endl;
                 throw DemoException();
         }
+        
+        switch (type)
+        {
+            case MessageType::Signon:
+                msg = nullptr;
+                break;
+            case MessageType::Packet:
+                msg = nullptr;
+                break;
+            case MessageType::ConsoleCmd:
+                msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size));
+                break;
+            case MessageType::UserCmd:
+                msg = static_cast<DemoMessage*>(new UserCmdMsg(tick, data, data_size));
+                break;
+            case MessageType::DataTables:
+                msg = nullptr;
+                break;
+            case MessageType::StringTables:
+                msg = nullptr;
+                break;
+            case MessageType::SyncTick:
+                msg = nullptr;
+                break;
+            default:
+                std::cerr << "Unknown demo message type encountered." << std::endl;
+                throw DemoException();
+        }
 
-        m_messages.push_back(msg);
+        delete data;
+        if (msg != nullptr)
+            m_messages.push_back(msg);
     }
     file.close();
 }

@@ -7,7 +7,7 @@
 
 const uint8_t MTBL[] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 
-BitBuffer::BitBuffer(uint8_t* data, size_t size)
+BitBuffer::BitBuffer(const char* data, size_t size)
 {
     m_buffer = data;
     m_size = size * 8; // convert to bits
@@ -29,7 +29,7 @@ uint32_t BitBuffer::ReadBits(size_t bits)
         uint8_t bit = m_pos & 0b111; // m_pos % 8
         size_t toget = std::min((size_t)8 - bit, left);
 
-        uint8_t nib = m_buffer[idx] >> bit & MTBL[toget];
+        char nib = m_buffer[idx] >> bit & MTBL[toget];
         ret |= nib << (bits - left);
 
         m_pos += toget;
@@ -49,9 +49,29 @@ uint8_t BitBuffer::ReadU8()
     return static_cast<uint8_t>(ReadBits(8));
 }
 
+uint16_t BitBuffer::ReadU16()
+{
+    return static_cast<uint16_t>(ReadBits(16));
+}
+
 uint32_t BitBuffer::ReadU32()
 {
     return ReadBits(32);
+}
+
+int8_t BitBuffer::ReadS8()
+{
+    return static_cast<int8_t>(ReadBits(8));
+}
+
+int16_t BitBuffer::ReadS16()
+{
+    return static_cast<int16_t>(ReadBits(16));
+}
+
+int32_t BitBuffer::ReadS32()
+{
+    return static_cast<int32_t>(ReadBits(32));
 }
 
 float BitBuffer::ReadFloat()
