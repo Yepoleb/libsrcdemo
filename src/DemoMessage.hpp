@@ -78,3 +78,10 @@ public:
     int16_t mousedx;
     int16_t mousedy;
 };
+
+class SyncTickMsg : public DemoMessage
+{
+public:
+    SyncTickMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual std::string toString() const;
+};

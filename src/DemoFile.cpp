@@ -93,7 +93,7 @@ DemoFile::DemoFile(std::string filename)
                 msg = nullptr;
                 break;
             case MessageType::SyncTick:
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
                 break;
             default:
                 std::cerr << "Unknown demo message type encountered." << std::endl;

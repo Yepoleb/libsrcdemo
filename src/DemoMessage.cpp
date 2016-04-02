@@ -18,7 +18,7 @@ DemoMessage::DemoMessage(const MessageType& p_type, const int32_t& p_tick)
 std::string DemoMessage::toString() const
 {
     std::stringstream ss;
-    ss << tick << " DemoMessage " << std::endl;
+    ss << tick << " DemoMessage" << std::endl;
     ss << "  Unknown Data" << std::endl;
     return ss.str();
 }
@@ -40,20 +40,6 @@ std::string ConsoleCmdMsg::toString() const
 UserCmdMsg::UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(MessageType::UserCmd, tick)
 {
-//    command_number = 0;
-//    tick_count = 0;
-//    viewangles = {0.0f, 0.0f, 0.0f};
-//    forwardmove = 0.0f;
-//    sidemove = 0.0f;
-//    upmove = 0.0f;
-//    buttons = 0;
-//    impulse = 0;
-//    weaponselect = 0;
-//    weaponsubtype = 0;
-//    mousedx = 0;
-//    mousedy = 0;
-    fields = 0;
-    
     BitBuffer buf(data, data_size);
     if (buf.ReadBool()) {
         command_number = buf.ReadU32();
@@ -136,7 +122,7 @@ std::string UserCmdMsg::toString() const
     if (fields & has_buttons)
         ss << "Buttons: 0x" << std::hex << buttons << std::dec << std::endl;
     if (fields & has_impulse)
-        ss << "Impulse: " << impulse << std::endl;
+        ss << "Impulse: " << (int)impulse << std::endl;
     if (fields & has_weaponselect)
         ss << "Weaponselect: " << weaponselect << std::endl;
     if (fields & has_weaponsubtype)
@@ -145,5 +131,18 @@ std::string UserCmdMsg::toString() const
         ss << "Mouse DX: " << mousedx << std::endl;
     if (fields & has_mousedy)
         ss << "Mouse DY: " << mousedy << std::endl;
+    return ss.str();
+}
+
+SyncTickMsg::SyncTickMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+    DemoMessage(MessageType::SyncTick, tick)
+{
+
+}
+
+std::string SyncTickMsg::toString() const
+{
+    std::stringstream ss;
+    ss << tick << " SyncTickMsg" << std::endl;
     return ss.str();
 }

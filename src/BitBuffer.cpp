@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "BitBuffer.hpp"
 
@@ -11,6 +12,7 @@ BitBuffer::BitBuffer(const char* data, size_t size)
 {
     m_buffer = data;
     m_size = size * 8; // convert to bits
+    m_pos = 0;
 }
 
 void BitBuffer::Seek(size_t bits)
@@ -29,7 +31,8 @@ uint32_t BitBuffer::ReadBits(size_t bits)
         uint8_t bit = m_pos & 0b111; // m_pos % 8
         size_t toget = std::min((size_t)8 - bit, left);
 
-        char nib = m_buffer[idx] >> bit & MTBL[toget];
+        uint8_t byte = static_cast<uint8_t>(m_buffer[idx]);
+        uint32_t nib = byte >> bit & MTBL[toget];
         ret |= nib << (bits - left);
 
         m_pos += toget;
@@ -78,7 +81,8 @@ float BitBuffer::ReadFloat()
 {
     // There's just no pretty way to interpret an uint32 as float
     uint32_t float_bits = ReadBits(32);
-    return *reinterpret_cast<float*>(&float_bits);
+    float float_val = *reinterpret_cast<float*>(&float_bits);
+    return float_val;
 }
 
 std::string BitBuffer::ReadString()
