@@ -71,14 +71,14 @@ DemoFile::DemoFile(std::string filename)
                 std::cerr << "Unknown demo message type encountered." << std::endl;
                 throw DemoException();
         }
-        
+
         switch (type)
         {
             case MessageType::Signon:
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new Signon(tick, data, data_size));
                 break;
             case MessageType::Packet:
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new Packet(tick, data, data_size));
                 break;
             case MessageType::ConsoleCmd:
                 msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size));
@@ -87,10 +87,10 @@ DemoFile::DemoFile(std::string filename)
                 msg = static_cast<DemoMessage*>(new UserCmdMsg(tick, data, data_size));
                 break;
             case MessageType::DataTables:
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size));
                 break;
             case MessageType::StringTables:
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
                 break;
             case MessageType::SyncTick:
                 msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
@@ -100,11 +100,20 @@ DemoFile::DemoFile(std::string filename)
                 throw DemoException();
         }
 
-        delete data;
+        if (data != nullptr) {
+            delete[] data;
+        }
         if (msg != nullptr)
             m_messages.push_back(msg);
     }
     file.close();
+}
+
+DemoFile::~DemoFile()
+{
+    for (DemoMessage* msg : m_messages) {
+        delete msg;
+    }
 }
 
 
@@ -122,7 +131,7 @@ std::string ReadString(std::istream& stream, const size_t& length)
     stream.read(temp, length);
     temp[length] = '\0';
     std::string str(temp);
-    delete temp;
+    delete[] temp;
     return str;
 }
 
