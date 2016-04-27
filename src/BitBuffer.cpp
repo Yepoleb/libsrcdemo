@@ -98,7 +98,7 @@ int32_t BitBuffer::ReadS32()
 uint32_t BitBuffer::ReadVarU32()
 {
     uint32_t number = 0;
-    for (int count = 0; count < sizeof(uint32_t); count++) {
+    for (size_t count = 0; count < sizeof(uint32_t); count++) {
         uint8_t b = ReadU8();
         // Add lower 7 bits to the number
         number |= (b & 0b01111111) << (7 * count);
@@ -167,11 +167,11 @@ VecCoord BitBuffer::ReadVecCoord()
 
 float BitBuffer::ReadBitAngle(size_t bits)
 {
-    float number;
     float shift = (1 << bits);
     // TODO: find a better name for the variable
     uint32_t x = ReadBits(bits);
-    number = (float)x * (360.f / shift);
+    float number = (float)x * (360.f / shift);
+    return number;
 }
 
 size_t BitBuffer::BitsLeft()

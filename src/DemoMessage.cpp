@@ -31,9 +31,8 @@ const char* SENDPROPTYPE_NAMES[] =
     "Int64"
 };
 
-DemoMessage::DemoMessage(const MessageType& p_type, const int32_t& p_tick)
+DemoMessage::DemoMessage(const int32_t& p_tick)
 {
-    type = p_type;
     tick = p_tick;
 }
 
@@ -46,7 +45,7 @@ std::string DemoMessage::toString() const
 }
 
 ConsoleCmdMsg::ConsoleCmdMsg(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::ConsoleCmd, tick)
+    DemoMessage(tick)
 {
     // Subtract 1 from data_size to remove the trailing zero bit
     command = std::string(data, data_size - 1);
@@ -61,66 +60,66 @@ std::string ConsoleCmdMsg::toString() const
 }
 
 UserCmdMsg::UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::UserCmd, tick)
+    DemoMessage(tick)
 {
     BitBuffer buf(data, data_size);
     fields = 0;
 
     if (buf.ReadBool()) {
         command_number = buf.ReadU32();
-        fields |= has_command_number;
+        fields |= USERCMD_COMMAND_NUMBER;
     }
     if (buf.ReadBool()) {
         tick_count = buf.ReadU32();
-        fields |= has_tick_count;
+        fields |= USERCMD_TICK_COUNT;
     }
     if (buf.ReadBool()) {
         viewangles.x = buf.ReadFloat();
-        fields |= has_viewangles_x;
+        fields |= USERCMD_VIEWANGLES_X;
     }
     if (buf.ReadBool()) {
         viewangles.y = buf.ReadFloat();
-        fields |= has_viewangles_y;
+        fields |= USERCMD_VIEWANGLES_Y;
     }
     if (buf.ReadBool()) {
         viewangles.z = buf.ReadFloat();
-        fields |= has_viewangles_z;
+        fields |= USERCMD_VIEWANGLES_Z;
     }
     if (buf.ReadBool()) {
         forwardmove = buf.ReadFloat();
-        fields |= has_forwardmove;
+        fields |= USERCMD_FORWARDMOVE;
     }
     if (buf.ReadBool()) {
         sidemove = buf.ReadFloat();
-        fields |= has_sidemove;
+        fields |= USERCMD_SIDEMOVE;
     }
     if (buf.ReadBool()) {
         upmove = buf.ReadFloat();
-        fields |= has_upmove;
+        fields |= USERCMD_UPMOVE;
     }
     if (buf.ReadBool()) {
         buttons = buf.ReadU32();
-        fields |= has_buttons;
+        fields |= USERCMD_BUTTONS;
     }
     if (buf.ReadBool()) {
         impulse = buf.ReadU8();
-        fields |= has_impulse;
+        fields |= USERCMD_IMPULSE;
     }
     if (buf.ReadBool()) {
         weaponselect = buf.ReadBits(MAX_EDICT_BITS);
-        fields |= has_weaponselect;
+        fields |= USERCMD_WEAPONSELECT;
         if (buf.ReadBool()) {
             weaponsubtype = buf.ReadBits(WEAPON_SUBTYPE_BITS);
-            fields |= has_weaponsubtype;
+            fields |= USERCMD_WEAPONSUBTYPE;
         }
     }
     if (buf.ReadBool()) {
         mousedx = buf.ReadS16();
-        fields |= has_mousedx;
+        fields |= USERCMD_MOUSEDX;
     }
     if (buf.ReadBool()) {
         mousedy = buf.ReadS16();
-        fields |= has_mousedy;
+        fields |= USERCMD_MOUSEDY;
     }
 }
 
@@ -128,39 +127,39 @@ std::string UserCmdMsg::toString() const
 {
     std::stringstream ss;
     ss << tick << " " << name << std::endl;
-    if (fields & has_command_number)
+    if (fields & USERCMD_COMMAND_NUMBER)
         ss << "  Command number: " << command_number << std::endl;
-    if (fields & has_tick_count)
+    if (fields & USERCMD_TICK_COUNT)
         ss << "  Tick count: " << tick_count << std::endl;
-    if (fields & has_viewangles_x)
+    if (fields & USERCMD_VIEWANGLES_X)
         ss << "  Viewangle pitch: " << viewangles.x << std::endl;
-    if (fields & has_viewangles_y)
+    if (fields & USERCMD_VIEWANGLES_Y)
         ss << "  Viewangle yaw: " << viewangles.y << std::endl;
-    if (fields & has_viewangles_z)
+    if (fields & USERCMD_VIEWANGLES_Z)
         ss << "  Viewangle roll: " << viewangles.z << std::endl;
-    if (fields & has_forwardmove)
+    if (fields & USERCMD_FORWARDMOVE)
         ss << "  Foward move: " << forwardmove << std::endl;
-    if (fields & has_sidemove)
+    if (fields & USERCMD_SIDEMOVE)
         ss << "  Side move: " << sidemove << std::endl;
-    if (fields & has_upmove)
+    if (fields & USERCMD_UPMOVE)
         ss << "  Up move: " << upmove << std::endl;
-    if (fields & has_buttons)
+    if (fields & USERCMD_BUTTONS)
         ss << "  Buttons: 0x" << std::hex << buttons << std::dec << std::endl;
-    if (fields & has_impulse)
+    if (fields & USERCMD_IMPULSE)
         ss << "  Impulse: " << (int)impulse << std::endl;
-    if (fields & has_weaponselect)
+    if (fields & USERCMD_WEAPONSELECT)
         ss << "  Weaponselect: " << weaponselect << std::endl;
-    if (fields & has_weaponsubtype)
+    if (fields & USERCMD_WEAPONSUBTYPE)
         ss << "  Weaponsubtype: " << weaponsubtype << std::endl;
-    if (fields & has_mousedx)
+    if (fields & USERCMD_MOUSEDX)
         ss << "  Mouse DX: " << mousedx << std::endl;
-    if (fields & has_mousedy)
+    if (fields & USERCMD_MOUSEDY)
         ss << "  Mouse DY: " << mousedy << std::endl;
     return ss.str();
 }
 
 SyncTickMsg::SyncTickMsg(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::SyncTick, tick)
+    DemoMessage(tick)
 {
 
 }
@@ -244,7 +243,7 @@ std::string DataTable::toString() const
 }
 
 DataTablesMsg::DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::DataTables, tick)
+    DemoMessage(tick)
 {
     BitBuffer buf(data, data_size);
 
@@ -315,7 +314,7 @@ std::string DataTablesMsg::toString() const
 }
 
 Packet::Packet(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::Packet, tick)
+    DemoMessage(tick)
 {
     BitBuffer buf(data, data_size);
     while (buf.BitsLeft() > 6) {
@@ -419,7 +418,9 @@ Packet::Packet(const int32_t& tick, const char* data, const size_t& data_size) :
         }
 
         if (p_msg != nullptr) {
-            //std::cout << indent(p_msg->toString(), 2);
+#ifdef DEBUG_PACKETS
+            std::cout << indent(p_msg->toString(), 2);
+#endif
             messages.push_back(p_msg);
         } else {
             break;
@@ -447,7 +448,7 @@ std::string Packet::toString() const
 Signon::Signon(const int32_t& tick, const char* data, const size_t& data_size) :
     Packet(tick, data, data_size)
 {
-    type = MessageType::Signon;
+
 }
 
 std::string Signon::toString() const
@@ -522,13 +523,14 @@ std::string StringTable::toString() const
 }
 
 StringTablesMsg::StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
-    DemoMessage(MessageType::StringTables, tick)
+    DemoMessage(tick)
 {
     BitBuffer buf(data, data_size);
     uint8_t num_tables = buf.ReadU8();
     for (size_t i_table = 0; i_table < num_tables; i_table++) {
         StringTable* table = new StringTable(buf);
         tables.push_back(table);
+        //std::cout << indent(table->toString(), 2);
     }
 }
 

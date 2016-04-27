@@ -63,7 +63,7 @@ DemoFile::DemoFile(std::string filename)
                 break;
             }
             case MessageType::SyncTick: {
-                data = nullptr; // lol wut
+                data = nullptr;
                 data_size = 0;
                 break;
             }
@@ -90,7 +90,9 @@ DemoFile::DemoFile(std::string filename)
                 msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size));
                 break;
             case MessageType::StringTables:
-                msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
+                //msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
+                // disable stringtable parsing
+                msg = nullptr;
                 break;
             case MessageType::SyncTick:
                 msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
@@ -103,8 +105,10 @@ DemoFile::DemoFile(std::string filename)
         if (data != nullptr) {
             delete[] data;
         }
-        if (msg != nullptr)
+        if (msg != nullptr) {
+            //std::cout << msg->toString();
             m_messages.push_back(msg);
+        }
     }
     file.close();
 }
@@ -113,6 +117,29 @@ DemoFile::~DemoFile()
 {
     for (DemoMessage* msg : m_messages) {
         delete msg;
+    }
+}
+
+void DemoFile::printHeader()
+{
+    std::cout << "demoprotocol: " << m_header.demoprotocol << std::endl;
+    std::cout << "networkprotocol: " << m_header.networkprotocol << std::endl;
+    std::cout << "servername: " << m_header.servername << std::endl;
+    std::cout << "clientname: " << m_header.clientname << std::endl;
+    std::cout << "mapname: " << m_header.mapname << std::endl;
+    std::cout << "gamedirectory: " << m_header.gamedirectory << std::endl;
+    std::cout << "playback_time: " << m_header.playback_time << std::endl;
+    std::cout << "playback_ticks: " << m_header.playback_ticks << std::endl;
+    std::cout << "playback_frames: " << m_header.playback_frames << std::endl;
+    std::cout << "signonlength: " << m_header.signonlength << std::endl;
+    std::cout << std::endl;
+}
+
+void DemoFile::printMessages()
+{
+    for (const DemoMessage* msg : m_messages) {
+        std::cout << msg->toString();
+        std::cout << std::endl;
     }
 }
 

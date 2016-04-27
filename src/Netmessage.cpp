@@ -6,6 +6,7 @@
 
 #include "BitBuffer.hpp"
 #include "Netmessage.hpp"
+#include "EventParser.hpp"
 #include "helpers.hpp"
 #include "network.hpp"
 
@@ -40,22 +41,8 @@ const char* SVC_Prefetch::name = "SVC_Prefetch";
 const char* SVC_Menu::name = "SVC_Menu";
 const char* SVC_GameEventList::name = "SVC_GameEventList";
 const char* SVC_GetCvarValue::name = "SVC_GetCvarValue";
-const char* SVC_CmdKeyValues::name = "SVC_CmdKeyValues";
 
-NetMsg::NetMsg(const NetMsgType& p_type)
-{
-    type = p_type;
-}
-
-std::string NetMsg::toString() const
-{
-    std::stringstream ss;
-    ss << name << " (" << static_cast<int>(type) << ")" << std::endl;
-    return ss.str();
-}
-
-NET_Nop::NET_Nop(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_NOP)
+NET_Nop::NET_Nop(BitBuffer& buf)
 { }
 
 std::string NET_Nop::toString() const
@@ -65,8 +52,7 @@ std::string NET_Nop::toString() const
     return ss.str();
 }
 
-NET_Disconnect::NET_Disconnect(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_DISCONNECT)
+NET_Disconnect::NET_Disconnect(BitBuffer& buf)
 {
     reason = buf.ReadString();
 }
@@ -79,8 +65,7 @@ std::string NET_Disconnect::toString() const
     return ss.str();
 }
 
-NET_File::NET_File(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_FILE)
+NET_File::NET_File(BitBuffer& buf)
 {
     transfer_id = buf.ReadU32();
     filename = buf.ReadString();
@@ -98,12 +83,14 @@ std::string NET_File::toString() const
     return ss.str();
 }
 
-NET_Tick::NET_Tick(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_TICK)
+NET_Tick::NET_Tick(BitBuffer& buf)
 {
     tick = buf.ReadS32();
     host_frametime = buf.ReadU16();
     host_ftime_stddev = buf.ReadU16();
+#ifdef DEBUG_TICKS
+    std::cout << "tick: " << tick << std::endl;
+#endif
 }
 
 std::string NET_Tick::toString() const
@@ -116,8 +103,7 @@ std::string NET_Tick::toString() const
     return ss.str();
 }
 
-NET_StringCmd::NET_StringCmd(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_STRINGCMD)
+NET_StringCmd::NET_StringCmd(BitBuffer& buf)
 {
     command = buf.ReadString();
 }
@@ -130,8 +116,7 @@ std::string NET_StringCmd::toString() const
     return ss.str();
 }
 
-NET_SetConVar::NET_SetConVar(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_SETCONVAR)
+NET_SetConVar::NET_SetConVar(BitBuffer& buf)
 {
     uint8_t num = buf.ReadU8();
     for (uint8_t i = 0; i < num; i++) {
@@ -146,13 +131,12 @@ std::string NET_SetConVar::toString() const
     std::stringstream ss;
     ss << name << std::endl;
     for (const strpair& pair : vars) {
-        ss << pair.first << ": " << pair.second << std::endl;
+        ss << "  " << pair.first << ": " << pair.second << std::endl;
     }
     return ss.str();
 }
 
-NET_SignonState::NET_SignonState(BitBuffer& buf) :
-    NetMsg(NetMsgType::NET_SIGNONSTATE)
+NET_SignonState::NET_SignonState(BitBuffer& buf)
 {
     signon_state = buf.ReadU8();
     spawn_count = buf.ReadS32();
@@ -167,8 +151,7 @@ std::string NET_SignonState::toString() const
     return ss.str();
 }
 
-SVC_Print::SVC_Print(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_PRINT)
+SVC_Print::SVC_Print(BitBuffer& buf)
 {
     text = buf.ReadString();
 }
@@ -181,8 +164,7 @@ std::string SVC_Print::toString() const
     return ss.str();
 }
 
-SVC_ServerInfo::SVC_ServerInfo(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_SERVERINFO)
+SVC_ServerInfo::SVC_ServerInfo(BitBuffer& buf)
 {
     protocol = buf.ReadS16();
     server_count = buf.ReadS32();
@@ -238,8 +220,7 @@ std::string SVC_ServerInfo::toString() const
     return ss.str();
 }
 
-SVC_SendTable::SVC_SendTable(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_SENDTABLE)
+SVC_SendTable::SVC_SendTable(BitBuffer& buf)
 {
     needs_decoder = buf.ReadBool();
     length = buf.ReadS16();
@@ -257,8 +238,7 @@ std::string SVC_SendTable::toString() const
     return ss.str();
 }
 
-SVC_ClassInfo::SVC_ClassInfo(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_CLASSINFO)
+SVC_ClassInfo::SVC_ClassInfo(BitBuffer& buf)
 {
     num_classes = buf.ReadS16();
     size_t class_bits = std::log2(num_classes) + 1;
@@ -293,8 +273,7 @@ std::string SVC_ClassInfo::toString() const
     return ss.str();
 }
 
-SVC_SetPause::SVC_SetPause(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_SETPAUSE)
+SVC_SetPause::SVC_SetPause(BitBuffer& buf)
 {
     pause = buf.ReadBool();
 }
@@ -308,8 +287,7 @@ std::string SVC_SetPause::toString() const
     return ss.str();
 }
 
-SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_CREATESTRINGTABLE)
+SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
 {
     tablename = buf.ReadString();
     max_entries = buf.ReadU16();
@@ -354,8 +332,7 @@ std::string SVC_CreateStringTable::toString() const
     return ss.str();
 }
 
-SVC_UpdateStringTable::SVC_UpdateStringTable(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_UPDATESTRINGTABLE)
+SVC_UpdateStringTable::SVC_UpdateStringTable(BitBuffer& buf)
 {
     table_id = buf.ReadBits(std::log2(MAX_TABLES));
     if (buf.ReadBool()) {
@@ -379,8 +356,7 @@ std::string SVC_UpdateStringTable::toString() const
     return ss.str();
 }
 
-SVC_VoiceInit::SVC_VoiceInit(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_VOICEINIT)
+SVC_VoiceInit::SVC_VoiceInit(BitBuffer& buf)
 {
     codec_name = buf.ReadString();
     quality = buf.ReadU8();
@@ -395,8 +371,7 @@ std::string SVC_VoiceInit::toString() const
     return ss.str();
 }
 
-SVC_VoiceData::SVC_VoiceData(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_VOICEDATA)
+SVC_VoiceData::SVC_VoiceData(BitBuffer& buf)
 {
     from_client = buf.ReadU8();
     proximity = buf.ReadU8();
@@ -415,8 +390,7 @@ std::string SVC_VoiceData::toString() const
     return ss.str();
 }
 
-SVC_Sounds::SVC_Sounds(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_SOUNDS)
+SVC_Sounds::SVC_Sounds(BitBuffer& buf)
 {
     reliable_sound = buf.ReadBool();
     if (reliable_sound) {
@@ -442,8 +416,7 @@ std::string SVC_Sounds::toString() const
     return ss.str();
 }
 
-SVC_SetView::SVC_SetView(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_SETVIEW)
+SVC_SetView::SVC_SetView(BitBuffer& buf)
 {
     entity_index = buf.ReadBits(MAX_EDICT_BITS);
 }
@@ -456,8 +429,7 @@ std::string SVC_SetView::toString() const
     return ss.str();
 }
 
-SVC_FixAngle::SVC_FixAngle(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_FIXANGLE)
+SVC_FixAngle::SVC_FixAngle(BitBuffer& buf)
 {
     relative = buf.ReadBool();
     angle.x = buf.ReadBitAngle(16);
@@ -477,8 +449,7 @@ std::string SVC_FixAngle::toString() const
     return ss.str();
 }
 
-SVC_CrosshairAngle::SVC_CrosshairAngle(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_CROSSHAIRANGLE)
+SVC_CrosshairAngle::SVC_CrosshairAngle(BitBuffer& buf)
 {
     angle.x = buf.ReadBitAngle(16);
     angle.y = buf.ReadBitAngle(16);
@@ -495,8 +466,7 @@ std::string SVC_CrosshairAngle::toString() const
     return ss.str();
 }
 
-SVC_BSPDecal::SVC_BSPDecal(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_BSPDECAL)
+SVC_BSPDecal::SVC_BSPDecal(BitBuffer& buf)
 {
     pos = buf.ReadVecCoord();
     decal_texture_index = buf.ReadBits(MAX_DECAL_INDEX_BITS);
@@ -525,8 +495,7 @@ std::string SVC_BSPDecal::toString() const
     return ss.str();
 }
 
-SVC_UserMessage::SVC_UserMessage(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_USERMESSAGE)
+SVC_UserMessage::SVC_UserMessage(BitBuffer& buf)
 {
     msg_type = buf.ReadU8();
     length = buf.ReadBits(11);
@@ -543,8 +512,7 @@ std::string SVC_UserMessage::toString() const
     return ss.str();
 }
 
-SVC_EntityMessage::SVC_EntityMessage(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_ENTITYMESSAGE)
+SVC_EntityMessage::SVC_EntityMessage(BitBuffer& buf)
 {
     entity_index = buf.ReadBits(MAX_EDICT_BITS);
     class_id = buf.ReadBits(MAX_SERVER_CLASS_BITS);
@@ -563,24 +531,25 @@ std::string SVC_EntityMessage::toString() const
     return ss.str();
 }
 
-SVC_GameEvent::SVC_GameEvent(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_GAMEEVENT)
+SVC_GameEvent::SVC_GameEvent(BitBuffer& buf)
 {
     length = buf.ReadBits(11);
     data = buf.ReadData(length);
+    BitBuffer evt_buf(data.data(), data.size());
+    event = g_evtparser->parseEvent(evt_buf);
 }
 
 std::string SVC_GameEvent::toString() const
 {
     std::stringstream ss;
     ss << name << std::endl;
+    ss << "  event:\n" << indent(event.toString(), 4);
     ss << "  length: " << length << std::endl;
     ss << format_data(data) << std::endl;
     return ss.str();
 }
 
-SVC_PacketEntities::SVC_PacketEntities(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_PACKETENTITIES)
+SVC_PacketEntities::SVC_PacketEntities(BitBuffer& buf)
 {
     max_entries = buf.ReadBits(MAX_EDICT_BITS);
     is_delta = buf.ReadBool();
@@ -614,8 +583,7 @@ std::string SVC_PacketEntities::toString() const
     return ss.str();
 }
 
-SVC_TempEntities::SVC_TempEntities(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_TEMPENTITIES)
+SVC_TempEntities::SVC_TempEntities(BitBuffer& buf)
 {
     num_entries = buf.ReadBits(EVENT_INDEX_BITS);
     if (NETPROTOCOL_VERSION >= 24) {
@@ -636,10 +604,9 @@ std::string SVC_TempEntities::toString() const
     return ss.str();
 }
 
-SVC_Prefetch::SVC_Prefetch(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_PREFETCH)
+SVC_Prefetch::SVC_Prefetch(BitBuffer& buf)
 {
-    type = 0; // SOUND, should be enum
+    fetch_type = 0; // SOUND, should be enum
     sound_index = buf.ReadBits(MAX_SOUND_INDEX_BITS);
 }
 
@@ -647,13 +614,14 @@ std::string SVC_Prefetch::toString() const
 {
     std::stringstream ss;
     ss << name << std::endl;
+    ss << "  type: " << fetch_type << std::endl;
+    ss << "  sound_index: " << sound_index << std::endl;
     return ss.str();
 }
 
-SVC_Menu::SVC_Menu(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_MENU)
+SVC_Menu::SVC_Menu(BitBuffer& buf)
 {
-    type = static_cast<DialogType>(buf.ReadU16());
+    dialog_type = static_cast<DialogType>(buf.ReadU16());
     length = buf.ReadU16();
     // TODO: Parse KeyValues
     data = buf.ReadData(length);
@@ -669,8 +637,7 @@ std::string SVC_Menu::toString() const
     return ss.str();
 }
 
-SVC_GameEventList::SVC_GameEventList(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_GAMEEVENTLIST)
+SVC_GameEventList::SVC_GameEventList(BitBuffer& buf)
 {
     num_events = buf.ReadBits(MAX_EVENT_BITS);
     length = buf.ReadBits(20);
@@ -687,8 +654,7 @@ std::string SVC_GameEventList::toString() const
     return ss.str();
 }
 
-SVC_GetCvarValue::SVC_GetCvarValue(BitBuffer& buf) :
-    NetMsg(NetMsgType::SVC_GETCVARVALUE)
+SVC_GetCvarValue::SVC_GetCvarValue(BitBuffer& buf)
 {
     cookie = buf.ReadS32();
     cvar_name = buf.ReadString();

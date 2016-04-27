@@ -36,6 +36,8 @@ public:
     ~DemoFile();
     DemoHeader getHeader() const { return m_header; };
     std::vector<DemoMessage*> getMessages() const { return m_messages; };
+    void printHeader();
+    void printMessages();
 private:
     DemoHeader m_header;
     std::vector<DemoMessage*> m_messages;

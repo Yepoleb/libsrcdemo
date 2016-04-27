@@ -31,23 +31,20 @@ enum class SendPropType
     DPT_NUMPropTypes
 };
 
-enum UserCmdFields
-{
-    has_command_number = (1 << 0),
-    has_tick_count = (1 << 1),
-    has_viewangles_x = (1 << 2),
-    has_viewangles_y = (1 << 3),
-    has_viewangles_z = (1 << 4),
-    has_forwardmove = (1 << 5),
-    has_sidemove = (1 << 6),
-    has_upmove = (1 << 7),
-    has_buttons = (1 << 8),
-    has_impulse = (1 << 9),
-    has_weaponselect = (1 << 10),
-    has_weaponsubtype = (1 << 11),
-    has_mousedx = (1 << 12),
-    has_mousedy = (1 << 13),
-};
+const uint16_t USERCMD_COMMAND_NUMBER = (1 << 0);
+const uint16_t USERCMD_TICK_COUNT = (1 << 1);
+const uint16_t USERCMD_VIEWANGLES_X = (1 << 2);
+const uint16_t USERCMD_VIEWANGLES_Y = (1 << 3);
+const uint16_t USERCMD_VIEWANGLES_Z = (1 << 4);
+const uint16_t USERCMD_FORWARDMOVE = (1 << 5);
+const uint16_t USERCMD_SIDEMOVE = (1 << 6);
+const uint16_t USERCMD_UPMOVE = (1 << 7);
+const uint16_t USERCMD_BUTTONS = (1 << 8);
+const uint16_t USERCMD_IMPULSE = (1 << 9);
+const uint16_t USERCMD_WEAPONSELECT = (1 << 10);
+const uint16_t USERCMD_WEAPONSUBTYPE = (1 << 11);
+const uint16_t USERCMD_MOUSEDX = (1 << 12);
+const uint16_t USERCMD_MOUSEDY = (1 << 13);
 
 const uint16_t SPROP_UNSIGNED = (1 << 0);
 const uint16_t SPROP_COORD = (1 << 1);
@@ -69,11 +66,13 @@ const uint16_t SPROP_COORD_MP_INTEGRAL = (1 << 15);
 class DemoMessage
 {
 public:
-    DemoMessage(const MessageType& p_type, const int32_t& p_tick);
+    DemoMessage(const int32_t& p_tick);
+    virtual ~DemoMessage() = default;
     virtual std::string toString() const;
 
     static const char* name;
-    MessageType type;
+    static const MessageType type;
+    //MessageType type;
     int32_t tick;
 };
 
@@ -81,9 +80,11 @@ class ConsoleCmdMsg : public DemoMessage
 {
 public:
     ConsoleCmdMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual ~ConsoleCmdMsg() = default;
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::ConsoleCmd;
     std::string command;
 };
 
@@ -91,9 +92,11 @@ class UserCmdMsg : public DemoMessage
 {
 public:
     UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual ~UserCmdMsg() = default;
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::UserCmd;
     uint32_t fields;
     uint32_t command_number;
     uint32_t tick_count;
@@ -138,10 +141,11 @@ class DataTablesMsg : public DemoMessage
 {
 public:
     DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size);
-    ~DataTablesMsg();
+    virtual ~DataTablesMsg();
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::DataTables;
     std::vector<DataTable*> tables;
     std::vector<ClassInfo> classes;
 };
@@ -153,16 +157,18 @@ public:
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::SyncTick;
 };
 
 class Packet : public DemoMessage
 {
 public:
     Packet(const int32_t& tick, const char* data, const size_t& data_size);
-    ~Packet();
+    virtual ~Packet();
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::Packet;
     std::vector<NetMsg*> messages;
 };
 
@@ -170,9 +176,11 @@ class Signon : public Packet
 {
 public:
     Signon(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual ~Signon() = default;
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::Signon;
 };
 
 class STableEntry
@@ -202,9 +210,10 @@ class StringTablesMsg : public DemoMessage
 {
 public:
     StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size);
-    ~StringTablesMsg();
+    virtual ~StringTablesMsg();
     virtual std::string toString() const;
 
     static const char* name;
+    static const MessageType type = MessageType::StringTables;
     std::vector<StringTable*> tables;
 };

@@ -1,5 +1,9 @@
 #pragma once
 #include <stdint.h>
+#include <limits>
+
+//#define DEBUG_PACKETS
+//#define DEBUG_TICKS
 
 const int32_t DEMOPROTOCOL_VERSION = 3;
 const int32_t NETPROTOCOL_VERSION = 24;
@@ -23,6 +27,7 @@ const size_t PROPINFOBITS_NUMBITS = 7;
 const size_t SPROP_NUMFLAGBITS_NETWORKED = 16;
 const size_t PROPINFOBITS_FLAGS = SPROP_NUMFLAGBITS_NETWORKED;
 
+const size_t SIZE_T_MAX = std::numeric_limits<size_t>::max();
 
 struct QAngle
 {

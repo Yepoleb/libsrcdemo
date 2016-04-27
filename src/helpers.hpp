@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-const size_t BINDUMP_LINELEN = 16;
+const size_t BINDUMP_LINELEN = 24;
 
 std::string bindump(const char* data, const size_t& length, const bool& spacing=true);
 std::string bindump(const std::vector<char>& data, const bool& spacing=true);
