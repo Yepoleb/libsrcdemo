@@ -7,6 +7,30 @@
 #include "BitBuffer.hpp"
 #include "EventParser.hpp"
 
+// SVC_CreateStringTable
+const size_t MAX_USERDATA_BITS = 14;
+const size_t SUBSTRING_BITS = 5;
+const size_t NET_MAX_PALYLOAD_BITS = 17;
+
+// SVC_Prefetch
+const size_t MAX_SOUND_INDEX_BITS = 14;
+
+// SVC_TempEntities
+const size_t EVENT_INDEX_BITS = 8;
+
+// SVC_UpdateStringTable
+const size_t MAX_TABLES = 32;
+
+// SVC_EntityMessage
+const size_t MAX_SERVER_CLASS_BITS = 9;
+
+// SVC_BSPDecal
+const size_t MAX_DECAL_INDEX_BITS = 9;
+const size_t SP_MODEL_INDEX_BITS = 13;
+
+// SVC_PacketEntities
+const size_t DELTASIZE_BITS = 20;
+
 enum class NetMsgType
 {
     NET_NOP = 0,
@@ -51,6 +75,31 @@ enum class DialogType
 };
 
 typedef std::pair<std::string,std::string> strpair;
+
+inline uint32_t SwapU32(uint32_t num)
+{
+    uint32_t swapped;
+    swapped  = (num & 0xFF000000) >> 24;
+    swapped |= (num & 0x00FF0000) >>  8;
+    swapped |= (num & 0x0000FF00) <<  8;
+    swapped |= (num & 0x000000FF) << 24;
+    return swapped;
+}
+
+class STableEntry
+{
+public:
+    STableEntry();
+    STableEntry(size_t p_index, const std::string& p_name);
+    STableEntry(size_t p_index, const std::string& p_name, size_t p_length, const std::vector<char>& p_data);
+    void fromBuffer(size_t p_index, BitBuffer& buf);
+    std::string toString() const;
+
+    size_t index;
+    std::string name;
+    size_t length;
+    std::vector<char> data;
+};
 
 class NetMsg
 {
@@ -246,8 +295,7 @@ public:
     uint16_t userdata_size;
     uint8_t userdata_size_bits;
     bool is_compressed;
-    size_t length;
-    std::vector<char> data;
+    std::vector<STableEntry> entries;
 };
 
 class SVC_UpdateStringTable : public NetMsg

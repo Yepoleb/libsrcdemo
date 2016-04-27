@@ -1,0 +1,13 @@
+* check dem_stringtables occurence in demos
+* packetentities
+* fix vdf parser
+* proper exceptions
+* one file per dem_msg
+
+* refactoring:
+  * move constants out of networking.hpp and add function name
+  * decide between classes / structs
+  * strict aliasing
+  * make evtparser local
+  * read demo version from header instead constant
+

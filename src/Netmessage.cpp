@@ -3,12 +3,13 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
+#include "snappy.h"
 
 #include "BitBuffer.hpp"
 #include "Netmessage.hpp"
 #include "EventParser.hpp"
 #include "helpers.hpp"
-#include "network.hpp"
+#include "common.hpp"
 
 const char* NetMsg::name = "Unknown Packet";
 const char* NET_Nop::name = "NET_Nop";
@@ -41,6 +42,53 @@ const char* SVC_Prefetch::name = "SVC_Prefetch";
 const char* SVC_Menu::name = "SVC_Menu";
 const char* SVC_GameEventList::name = "SVC_GameEventList";
 const char* SVC_GetCvarValue::name = "SVC_GetCvarValue";
+
+const uint32_t LZSS_MAGIC = SwapU32(('L' << 24) | ('Z' << 16) | ('S' << 8) | ('S'));
+const uint32_t SNAPPY_MAGIC = SwapU32(('S' << 24) | ('N' << 16) | ('A' << 8) | ('P'));
+
+STableEntry::STableEntry()
+{
+    length = 0;
+}
+
+STableEntry::STableEntry(size_t p_index, const std::string& p_name)
+{
+    index = p_index;
+    name = p_name;
+    length = 0;
+}
+
+STableEntry::STableEntry(size_t p_index, const std::string& p_name, size_t p_length, const std::vector<char>& p_data)
+{
+    index = p_index;
+    name = p_name;
+    length = p_length;
+    data = p_data;
+}
+
+void STableEntry::fromBuffer(size_t p_index, BitBuffer& buf)
+{
+    index = p_index;
+    name = buf.ReadString();
+    bool has_data = buf.ReadBool();
+    if (has_data) {
+        // Length in bytes!
+        length = buf.ReadU16() * 8;
+        data = buf.ReadData(length);
+    } else {
+        length = 0;
+    }
+}
+
+std::string STableEntry::toString() const
+{
+    std::stringstream ss;
+    ss << index << ": " << name << std::endl;
+    if (length) {
+        ss << format_data(data) << std::endl;
+    }
+    return ss.str();
+}
 
 NET_Nop::NET_Nop(BitBuffer& buf)
 { }
@@ -291,8 +339,8 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
 {
     tablename = buf.ReadString();
     max_entries = buf.ReadU16();
-    size_t encode_bits = std::log2(max_entries) + 1;
-    num_entries = buf.ReadBits(encode_bits);
+    size_t encode_bits = std::log2(max_entries);
+    num_entries = buf.ReadBits(encode_bits + 1);
     if (NETPROTOCOL_VERSION >= 24) {
         length = buf.ReadVarU32();
     } else {
@@ -313,6 +361,72 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
     }
 
     data = buf.ReadData(length);
+
+    BitBuffer table_buf(data.data(), data.size());
+    std::vector<char> decompressed_data;
+    if (is_compressed) {
+        size_t decompressed_size = table_buf.ReadU32();
+        size_t compressed_size = table_buf.ReadU32() - 4;
+        uint32_t magic = table_buf.ReadU32();
+        std::vector<char> compressed_data;
+        decompressed_data.resize(decompressed_size);
+        compressed_data = table_buf.ReadData(compressed_size * 8);
+        if (magic == LZSS_MAGIC) {
+            std::cerr << "LZSS compression is not supported" << std::endl;
+            throw std::exception();
+        } else if (magic == SNAPPY_MAGIC) {
+            snappy::RawUncompress(compressed_data.data(), compressed_size, decompressed_data.data());
+        } else {
+            std::cerr << "Unsupported compression " << magic << std::endl;
+            throw std::exception();
+        }
+        table_buf = BitBuffer(decompressed_data.data(), decompressed_size);
+    }
+
+    std::vector<std::string> history;
+    size_t entry_index = 0;
+    for (int32_t i = 0; i < num_entries; i++) {
+        if (not table_buf.ReadBool()) {
+            entry_index = table_buf.ReadBits(encode_bits);
+        }
+
+        STableEntry entry;
+        entry.index = entry_index;
+        if (table_buf.ReadBool()) {
+            bool has_basestring = table_buf.ReadBool();
+            if (has_basestring) {
+                uint8_t substr_index = table_buf.ReadBits(5);
+                uint8_t substr_length = table_buf.ReadBits(SUBSTRING_BITS);
+                std::string basestring = history.at(substr_index);
+                std::string substring = basestring.substr(0, substr_length);
+                entry.name = substring + table_buf.ReadString();
+            } else {
+                entry.name = table_buf.ReadString();
+            }
+        }
+
+        if (table_buf.ReadBool()) {
+            if (userdata_fixed_size) {
+                entry.length = userdata_size_bits;
+                entry.data = table_buf.ReadData(userdata_size_bits);
+            } else {
+                size_t userdata_size = table_buf.ReadBits(MAX_USERDATA_BITS) * 8;
+                entry.length = userdata_size;
+                entry.data = table_buf.ReadData(userdata_size);
+            }
+        } else {
+            entry.length = 0;
+        }
+
+        if (history.size() >= 32) {
+            history.erase(history.begin());
+        }
+
+        entries.push_back(entry);
+        history.push_back(entry.name);
+
+        entry_index++;
+    }
 }
 
 std::string SVC_CreateStringTable::toString() const
@@ -327,8 +441,11 @@ std::string SVC_CreateStringTable::toString() const
     ss << "  userdata_size: " << userdata_size << std::endl;
     ss << "  userdata_size_bits: " << (int)userdata_size_bits << std::endl;
     ss << "  is_compressed: " << is_compressed << std::endl;
-    ss << "  length: " << length << std::endl;
-    ss << format_data(data) << std::endl;
+    //ss << "  length: " << length << std::endl;
+    //ss << format_data(data) << std::endl;
+    for (STableEntry entry : entries) {
+        ss << indent(entry.toString(), 2);
+    }
     return ss.str();
 }
 

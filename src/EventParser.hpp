@@ -4,10 +4,11 @@
 
 #include "BitBuffer.hpp"
 
-const size_t NUM_FIELD_TYPES = 7;
-
 class EventParser;
 extern EventParser* g_evtparser;
+
+const size_t MAX_EVENT_BITS = 9;
+const size_t NUM_FIELD_TYPES = 7;
 
 enum class FieldType
 {

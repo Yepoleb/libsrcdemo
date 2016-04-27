@@ -33,7 +33,7 @@ std::string bindump(const std::vector<char>& data, const bool& spacing)
 std::string escape(std::string str)
 {
     std::stringstream ss;
-    ss << std::hex << std::setfill('0') << std::setw(2);
+    ss << std::hex;
     for (size_t i = 0; i < str.size(); i++) {
         char c = str.at(i);
         bool safe = false;
@@ -44,6 +44,7 @@ std::string escape(std::string str)
         if (safe) {
             ss << c;
         } else {
+            ss << std::setfill('0') << std::setw(2);
             ss << "\\x" << (unsigned int)(unsigned char)c;
         }
     }

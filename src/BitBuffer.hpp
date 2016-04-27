@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "network.hpp"
+#include "common.hpp"
 
 class BitBuffer
 {

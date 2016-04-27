@@ -31,6 +31,7 @@ enum class SendPropType
     DPT_NUMPropTypes
 };
 
+// UserCmdMsg
 const uint16_t USERCMD_COMMAND_NUMBER = (1 << 0);
 const uint16_t USERCMD_TICK_COUNT = (1 << 1);
 const uint16_t USERCMD_VIEWANGLES_X = (1 << 2);
@@ -45,7 +46,9 @@ const uint16_t USERCMD_WEAPONSELECT = (1 << 10);
 const uint16_t USERCMD_WEAPONSUBTYPE = (1 << 11);
 const uint16_t USERCMD_MOUSEDX = (1 << 12);
 const uint16_t USERCMD_MOUSEDY = (1 << 13);
+const size_t WEAPON_SUBTYPE_BITS = 6;
 
+// SendProp
 const uint16_t SPROP_UNSIGNED = (1 << 0);
 const uint16_t SPROP_COORD = (1 << 1);
 const uint16_t SPROP_NOSCALE = (1 << 2);
@@ -63,6 +66,13 @@ const uint16_t SPROP_COORD_MP = (1 << 13);
 const uint16_t SPROP_COORD_MP_LOWPRECISION = (1 << 14);
 const uint16_t SPROP_COORD_MP_INTEGRAL = (1 << 15);
 
+// DataTablesMsg
+const size_t PROPINFOBITS_NUMPROPS = 10;
+const size_t PROPINFOBITS_TYPE = 5;
+const size_t PROPINFOBITS_NUMELEMENTS = 10;
+const size_t PROPINFOBITS_NUMBITS = 7;
+const size_t PROPINFOBITS_FLAGS = 16;
+
 class DemoMessage
 {
 public:
@@ -72,7 +82,6 @@ public:
 
     static const char* name;
     static const MessageType type;
-    //MessageType type;
     int32_t tick;
 };
 
@@ -181,17 +190,6 @@ public:
 
     static const char* name;
     static const MessageType type = MessageType::Signon;
-};
-
-class STableEntry
-{
-public:
-    STableEntry(BitBuffer& buf);
-    std::string toString() const;
-
-    std::string name;
-    size_t length;
-    std::vector<char> data;
 };
 
 class StringTable

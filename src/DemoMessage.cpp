@@ -8,7 +8,7 @@
 #include "BitBuffer.hpp"
 #include "Netmessage.hpp"
 #include "helpers.hpp"
-#include "network.hpp"
+#include "common.hpp"
 
 const char* DemoMessage::name = "Unknown DemoMessage";
 const char* ConsoleCmdMsg::name = "ConsoleCmd";
@@ -456,42 +456,21 @@ std::string Signon::toString() const
     return Packet::toString();
 }
 
-STableEntry::STableEntry(BitBuffer& buf)
-{
-    name = buf.ReadString();
-    bool has_data = buf.ReadBool();
-    if (has_data) {
-        // Length in bytes!
-        length = buf.ReadU16() * 8;
-        data = buf.ReadData(length);
-    } else {
-        length = 0;
-    }
-}
-
-std::string STableEntry::toString() const
-{
-    std::stringstream ss;
-    ss << name << std::endl;
-    if (length) {
-        ss << format_data(data) << std::endl;
-    }
-    return ss.str();
-}
-
 StringTable::StringTable(BitBuffer& buf)
 {
     name = buf.ReadString();
     uint16_t num_entries = buf.ReadU16();
     for (size_t i_entry = 0; i_entry < num_entries; i_entry++) {
-        STableEntry entry(buf);
+        STableEntry entry;
+        entry.fromBuffer(i_entry, buf);
         entries.push_back(entry);
     }
     has_client_entries = buf.ReadBool();
     if (has_client_entries) {
         uint16_t num_entries_client = buf.ReadU16();
         for (size_t i_entry = 0; i_entry < num_entries_client; i_entry++) {
-            STableEntry entry(buf);
+            STableEntry entry;
+            entry.fromBuffer(i_entry, buf);
             entries_client.push_back(entry);
         }
     }
@@ -502,21 +481,13 @@ std::string StringTable::toString() const
     std::stringstream ss;
     ss << name << std::endl;
     ss << "  entries:" << std::endl;
-    for (size_t i_entry = 0; i_entry < entries.size(); i_entry++) {
-        const STableEntry& entry = entries[i_entry];
-        ss << "  " << i_entry << ": " << entry.name << std::endl;
-        if (entry.length) {
-            ss << indent(format_data(entry.data), 2) << std::endl;
-        }
+    for (const STableEntry& entry : entries) {
+        ss << indent(entry.toString(), 2);
     }
     if (has_client_entries) {
         ss << "  entries_client:" << std::endl;
-        for (size_t i_entry = 0; i_entry < entries_client.size(); i_entry++) {
-            const STableEntry& entry = entries_client[i_entry];
-            ss << "  " << i_entry << ": " << entry.name << std::endl;
-            if (entry.length) {
-                ss << indent(format_data(entry.data), 2) << std::endl;
-            }
+        for (const STableEntry& entry : entries) {
+            ss << indent(entry.toString(), 2);
         }
     }
     return ss.str();
@@ -525,13 +496,14 @@ std::string StringTable::toString() const
 StringTablesMsg::StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
+#ifdef DEM_STRINGTABLES
     BitBuffer buf(data, data_size);
     uint8_t num_tables = buf.ReadU8();
     for (size_t i_table = 0; i_table < num_tables; i_table++) {
         StringTable* table = new StringTable(buf);
         tables.push_back(table);
-        //std::cout << indent(table->toString(), 2);
     }
+#endif
 }
 
 StringTablesMsg::~StringTablesMsg()
@@ -545,8 +517,12 @@ std::string StringTablesMsg::toString() const
 {
     std::stringstream ss;
     ss << tick << " " << name << std::endl;
+#ifdef DEM_STRINGTABLES
     for (StringTable* table : tables) {
         ss << indent(table->toString(), 2);
     }
+#else
+    ss << "  Skipped StringTableMsg parsing" << std::endl;
+#endif
     return ss.str();
 }

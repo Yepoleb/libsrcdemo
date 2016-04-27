@@ -90,9 +90,7 @@ DemoFile::DemoFile(std::string filename)
                 msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size));
                 break;
             case MessageType::StringTables:
-                //msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
-                // disable stringtable parsing
-                msg = nullptr;
+                msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
                 break;
             case MessageType::SyncTick:
                 msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
