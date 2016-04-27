@@ -341,6 +341,7 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
     max_entries = buf.ReadU16();
     size_t encode_bits = std::log2(max_entries);
     num_entries = buf.ReadBits(encode_bits + 1);
+    size_t length;
     if (NETPROTOCOL_VERSION >= 24) {
         length = buf.ReadVarU32();
     } else {
@@ -360,7 +361,7 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
         is_compressed = buf.ReadBool();
     }
 
-    data = buf.ReadData(length);
+    std::vector<char> data = buf.ReadData(length);
 
     BitBuffer table_buf(data.data(), data.size());
     std::vector<char> decompressed_data;

@@ -110,12 +110,19 @@ uint32_t BitBuffer::ReadVarU32()
     return number;
 }
 
+union UInt32FloatUnion
+{
+    uint32_t v_int;
+    float v_float;
+};
+
 float BitBuffer::ReadFloat()
 {
-    // There's just no pretty way to interpret an uint32 as float
+    // There's just no pretty way to interpret a uint32 as float
     uint32_t float_bits = ReadBits(32);
-    float float_val = *reinterpret_cast<float*>(&float_bits);
-    return float_val;
+    UInt32FloatUnion ifunion;
+    ifunion.v_int = float_bits;
+    return ifunion.v_float;
 }
 
 std::string BitBuffer::ReadString()

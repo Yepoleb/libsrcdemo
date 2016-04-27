@@ -9,16 +9,6 @@
 #include "EventParser.hpp"
 #include "BitBuffer.hpp"
 
-/*
-Order:
-serverevents.res
-gameevents.res
-modevents.res
-
-Parser bugs:
-- {} interpreted as key
-*/
-
 EventParser* g_evtparser;
 
 const char* EVENT_FIELD_TYPE_MAP[] =

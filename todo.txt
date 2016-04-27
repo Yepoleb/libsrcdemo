@@ -1,13 +1,12 @@
-* check dem_stringtables occurence in demos
-* packetentities
-* fix vdf parser
-* proper exceptions
-* one file per dem_msg
+* Check if dem_stringtables can occur after svc_createstringtables
+* Fix VDF parser interpreting {} as name
+* Proper exceptions
+* One file per dem_msg
+* Rename Packet to PacketMsg
+* Decide between classes / structs for netmessages
+* Add parser state
+  * Make evtparser local
+  * Read demo version from header instead constant
 
-* refactoring:
-  * move constants out of networking.hpp and add function name
-  * decide between classes / structs
-  * strict aliasing
-  * make evtparser local
-  * read demo version from header instead constant
-
+* Implement SVC_PacketEntities
+* Implement SVC_GameEventList
