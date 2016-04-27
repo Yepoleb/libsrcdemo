@@ -2,6 +2,7 @@
 * Fix VDF parser interpreting {} as name
 * Proper exceptions
 * One file per dem_msg
+* Default constructors for dem- and netmessages
 * Rename Packet to PacketMsg
 * Decide between classes / structs for netmessages
 * Add parser state

@@ -117,7 +117,6 @@ void EventParser::loadFile(const char* path)
     }
 
     delete tree;
-    tree = nullptr;
 }
 
 size_t EventParser::getIndex(const std::string& name)

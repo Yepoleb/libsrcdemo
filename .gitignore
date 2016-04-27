@@ -1,4 +1,4 @@
 .codelite
 Debug
 Release
-data
+src/paths.hpp
