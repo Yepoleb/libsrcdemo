@@ -15,7 +15,7 @@
 *  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-/**  
+/**
  *	@author		commonbullet
  *	@version	1.05a
  */
@@ -98,7 +98,7 @@ VDFTree::VDFTree()
 	nodeCount    =  0;
 	rootNode     =  NULL;
 	nodeIndex	 =  NULL;
-	treeId		 =  0;	
+	treeId		 =  0;
 }
 
 VDFTree::~VDFTree()
@@ -126,11 +126,11 @@ void VDFTree::CreateTree()
 VDFNode *VDFTree::CreateNode(VDFNode *parentNode)
 {
 	VDFNode  *node;
-	
+
 	GrowPArray(&nodeIndex, nodeCount);
 
 	node = new VDFNode;
-	
+
 	node->childNode		= NULL;
 	node->nextNode		= NULL;
 	node->parentNode	= NULL;
@@ -138,8 +138,8 @@ VDFNode *VDFTree::CreateNode(VDFNode *parentNode)
 	node->key			= NULL;
 	node->value			= NULL;
 	node->parentNode	= parentNode;
-	node->previousNode	= NULL;	
-	
+	node->previousNode	= NULL;
+
 	nodeIndex[nodeCount] = node;
 
 	if(node)
@@ -156,7 +156,7 @@ VDFNode *VDFTree::CreateNode(VDFNode *parentNode)
 void VDFTree::AppendNode(VDFNode *Node, VDFNode *newNode)
 {
 	VDFNode *lastNode;
-	
+
 	if(Node == NULL)
 		return;
 
@@ -169,7 +169,7 @@ void VDFTree::AppendNode(VDFNode *Node, VDFNode *newNode)
 /**
  *	Adds a child node into a given node.
  *
- *  @param	Node		node pointer which the child will be added, 
+ *  @param	Node		node pointer which the child will be added,
  *						if the node already has a child,<br>
  *						it's appended to node's child level.
  *  @param	childNode	pointer to the noded to be appended as a child
@@ -194,7 +194,7 @@ void VDFTree::DestroyTree()
 {
 	UINT ind;
 	VDFNode *node;
-	
+
 	for(ind = 0; ind < nodeCount; ind++) {
 		node = *(nodeIndex + ind);
 		if(!node)
@@ -224,10 +224,10 @@ VDFNode *VDFTree::GetNodeById(UINT id)
 /**
  *	Gets the node next to a given one.
  *
- *  @param	Node		node to get the next one.	
+ *  @param	Node		node to get the next one.
  *  @return				Returns the next node or NULL if it doesn't
  *						have a next node.
- */ 
+ */
 VDFNode *VDFTree::GetNextNode(VDFNode *Node)
 {
 	return Node->nextNode;
@@ -255,7 +255,7 @@ VDFNode *VDFTree::GetFirstNode(VDFNode *Node)
 VDFNode *VDFTree::GetLastNode(VDFNode *Node)
 {
 	VDFNode *lastNode;
-	
+
 	lastNode = Node;
 
 	while(true) {
@@ -268,7 +268,7 @@ VDFNode *VDFTree::GetLastNode(VDFNode *Node)
 
 /**
  *	Although the tree object has a 'rootNode' pointer, this static
- *	function is designed to<br>find the rootNode without the 
+ *	function is designed to<br>find the rootNode without the
  *  vdf tree information.
  *
  *	@param	Node		Node to get the previous one.
@@ -339,7 +339,7 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 	int p1;
 	bool comp;
 
-	
+
 
 	firstNode = VDFTree::GetFirstNode(refNode);
 
@@ -348,13 +348,13 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 
 	parentNode = firstNode->parentNode;
 	length = VDFTree::CountBranchNodes(firstNode);
-	
+
 	if(!length)
 		return;
 
 	sort = new VDFNode*[length];
 	memset(sort, 0, length * sizeof(VDFNode*));
-	
+
 	Node = firstNode;
 	ind = 0;
 
@@ -362,8 +362,8 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 		sort[ind++] = Node;
 		Node = Node->nextNode;
 	}
-	
-	
+
+
 	// shell sort
 	guide = 1;
 
@@ -371,26 +371,26 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 		guide *= 2;
 
 	while(guide /= 2) {
-		
+
 		for(p = 0; p < (int)length - guide; p++) {
-			
+
 			p1 = p;
 
 			while(p1 > -1) {
 
 				q = p1 + guide;
-				
+
 				if(q >= (int)length)
-					break;			
-				
-				
+					break;
+
+
 				comp2 = (byKey) ? sort[p1]->key : sort[p1]->value;
 				comp1 = (byKey) ? sort[q]->key : sort[q]->value;
 
 				if(comp1 == NULL)
 					continue;
-				
-				comp = (comp2 == NULL) ? false : (!byNumber) ? (strcmp(comp1, comp2) < 0) 
+
+				comp = (comp2 == NULL) ? false : (!byNumber) ? (strcmp(comp1, comp2) < 0)
 						: atoi(comp1) < atoi(comp2);
 
 				if(comp) {
@@ -403,7 +403,7 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 		}
 	}
 
-	for(ind = 0; ind < (int)length; ind++) {		
+	for(ind = 0; ind < (int)length; ind++) {
 		sort[ind]->nextNode = (ind + 1 < (int)length) ? sort[ind + 1] : NULL;
 		sort[ind]->previousNode = (ind - 1 >= 0) ? sort[ind - 1] : NULL;
 	}
@@ -418,9 +418,9 @@ void VDFTree::SortBranchNodes(VDFNode *refNode, bool byKey, bool byNumber)
 }
 
 bool VDFTree::IsTreeNode(VDFNode *node) {
-	
+
 	size_t count;
-	
+
 	for(count = 0; count < this->nodeCount; count++) {
 		if(this->nodeIndex[count] == node)
 			return true;
@@ -433,9 +433,8 @@ bool VDFTree::IsTreeNode(VDFNode *node) {
 void VDFTree::MoveAsChild(VDFNode *parentNode, VDFNode *moveNode)
 {
 	VDFNode *childNode;
-	VDFNode *movePrevious;
 	VDFNode *moveNext;
-	VDFNode *moveParent;	
+	VDFNode *moveParent;
 
 	if( parentNode == NULL ||
 		moveNode == NULL ||
@@ -445,7 +444,6 @@ void VDFTree::MoveAsChild(VDFNode *parentNode, VDFNode *moveNode)
 	if(!IsTreeNode(moveNode) || !IsTreeNode(parentNode))
 		return;
 
-	movePrevious = moveNode->previousNode;
 	moveNext = moveNode->nextNode;
 	moveParent = moveNode->parentNode;
 	childNode = parentNode->childNode;
@@ -493,7 +491,7 @@ void VDFTree::MoveToBranch(VDFNode *refNode, VDFNode *moveNode, UINT position)
 
 	if(!IsTreeNode(refNode) || !IsTreeNode(moveNode))
 		return;
-	
+
 	targetPrevious = refNode->previousNode;
 	targetNext = refNode->nextNode;
 	srcPrevious = moveNode->previousNode;
@@ -511,31 +509,31 @@ void VDFTree::MoveToBranch(VDFNode *refNode, VDFNode *moveNode, UINT position)
 		moveNode->nextNode = targetNext;
 		if(targetNext != NULL)
 			targetNext->previousNode = moveNode;
-		
+
 		if(moveNode == rootNode)
 			rootNode = GetRootNode(moveNode);
 
-	}	
+	}
 	else {
-		if(srcPrevious == NULL) {			
+		if(srcPrevious == NULL) {
 			if(moveNode->parentNode)
 				moveNode->parentNode->childNode = srcNext;
 		}
-		
+
 		refNode->previousNode = moveNode;
 		moveNode->nextNode = refNode;
 		moveNode->previousNode = targetPrevious;
-		
+
 		if(moveNode == rootNode)
 			rootNode = GetRootNode(moveNode);
 		else if(refNode == rootNode)
 			rootNode = moveNode;
 
 	}
-	
+
 	if(srcNext)
 		srcNext->previousNode = srcPrevious;
-	
+
 	if(srcPrevious)
 		srcPrevious->nextNode = srcNext;
 
@@ -580,7 +578,7 @@ void VDFTree::DeleteNode(VDFNode *Node)
 {
 	VDFNode *temp;
 	VDFNode *next;
-	
+
 	temp = Node;
 
 	while(Node != NULL && temp != NULL) {
@@ -594,7 +592,7 @@ void VDFTree::DeleteNode(VDFNode *Node)
 			if( temp->parentNode ) {
 				if(temp->parentNode->childNode == temp) {
 					temp->parentNode->childNode = temp->nextNode;
-				}				
+				}
 			}
 			if(temp->nextNode) {
 				temp->nextNode->previousNode = temp->previousNode;
@@ -619,7 +617,7 @@ void VDFTree::DeleteNode(VDFNode *Node)
 		nodeIndex[temp->index] = NULL;
 		if(temp != rootNode) {
 			FinalizeArray(temp->key);
-			FinalizeArray(temp->value);	
+			FinalizeArray(temp->value);
 			Finalize(temp);
 		}
 
@@ -679,7 +677,7 @@ VDFTokenizer::VDFTokenizer()
 {
 	source = NULL;
 	token = NULL;
-	pos = 0;	
+	pos = 0;
 }
 
 VDFTokenizer::~VDFTokenizer()
@@ -688,7 +686,7 @@ VDFTokenizer::~VDFTokenizer()
 }
 
 /**
- *	Updates token pointer to the next token. 
+ *	Updates token pointer to the next token.
  *
  *	@return	Returns true if there are more tokens.
  */
@@ -698,12 +696,12 @@ bool VDFTokenizer::HasMoreTokens()
 	size_t startpos;
 	size_t length;
 	size_t srclength;
-	
+
 	bool insideQuotes;
 	bool hasStarted;
 
-	
-	endpos = pos;	
+
+	endpos = pos;
 	insideQuotes = false;
 	hasStarted = false;
 	startpos = 0;
@@ -712,9 +710,9 @@ bool VDFTokenizer::HasMoreTokens()
 
 	if(endpos >= srclength)
 		return false;
-		
+
 	FinalizeArray(token);
-	
+
 	while(true) {
 		while(endpos < srclength) {
 			if(source[endpos] == '\"') {
@@ -726,7 +724,7 @@ bool VDFTokenizer::HasMoreTokens()
 				else
 					break;
 			}
-			
+
 			else if(source[endpos] == ' ' || source[endpos] == '\t') {
 				if(!insideQuotes && hasStarted)
 					break;
@@ -751,7 +749,7 @@ bool VDFTokenizer::HasMoreTokens()
 			endpos++;
 		}
 	}
-	
+
 	if(length && hasStarted) {
 		token = new char[length + 1];
 		memcpy(token, (source + startpos), length);
@@ -801,12 +799,12 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
 	int				level;
 	bool			newChild;
 	int				retVal;
-	
+
 	if(pFW == NULL)
 		return false;
 
 	if(filename == NULL || pFW->pfnParser == NULL)
-		return false;	
+		return false;
 
 	pFile = NULL;
 	pFile = fopen(filename, "r");
@@ -824,19 +822,19 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
 		(*(pFW->pfnStart))(pFW->fwidStart, pFW->mdFilename);
 
 	while(fgets(line, MAX_LINE_SIZE, pFile)) {
-		
+
 		if(argnum == 1)
 			retVal = (*(pFW->pfnParser))(pFW->fwidParser, pFW->mdFilename, key, value, level);
 
 		argnum = 0;
 		*key = '\0';
 		*value = '\0';
-		
+
 		if(retVal == RETURN_VDFPARSER_STOP)
 				break;
 
 		tokenizer.SetString(line);
-		
+
 		while(tokenizer.HasMoreTokens()) {
 
 			if(retVal == RETURN_VDFPARSER_STOP)
@@ -848,12 +846,12 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
 				// block comments
 				if(tokenizer.token[0] == '/' && tokenizer.token[1] == '/')
 					break;
-				
+
 				// open node
 				else if(!strcmp(tokenizer.token, "{")) {
-					
+
 					//retVal = (*pfnParse)(key, value, level);
-					
+
 					level++;
 					argnum = 0;
 					newChild = false;
@@ -863,7 +861,7 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
 
 				// close node
 				else if(!strcmp(tokenizer.token, "}")) {
-					
+
 					//if(!newChild)
 					//		retVal = (*pfnParse)(key, value, level);
 
@@ -888,11 +886,11 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
 						retVal = (*(pFW->pfnParser))(pFW->fwidParser, pFW->mdFilename, key, value, level);
 					}
 					argnum++;
-				}			
+				}
 			}
 		}
 	}
-	
+
 	if(argnum == 1 && retVal == RETURN_VDFPARSER_CONTINUE)
 		retVal = (*(pFW->pfnParser))(pFW->fwidParser, pFW->mdFilename, key, value, level);
 
@@ -914,9 +912,9 @@ bool VDFTreeParser::ParseVDF(const char *filename, ParseForward *pFW)
  *	@return				Returns true if succeeded.
  */
 bool VDFTreeParser::OpenVDF(const char *filename, VDFTree **vdfTree, OpenForward *openFW)
-{	
+{
 	FILE	 *pFile;
-	char	 line[MAX_LINE_SIZE];	
+	char	 line[MAX_LINE_SIZE];
 	int		 level;
 	int		 argnum;
 	int		 len;
@@ -932,11 +930,11 @@ bool VDFTreeParser::OpenVDF(const char *filename, VDFTree **vdfTree, OpenForward
 
 	if(openFW != NULL)
 		pfnParse = openFW->pfnOpen;
-	
+
 	if(filename == NULL) {
 		return false;
 	}
-	
+
 	pFile = NULL;
 	if(!(pFile = fopen(filename, "r")))
 		return false;
@@ -954,21 +952,21 @@ bool VDFTreeParser::OpenVDF(const char *filename, VDFTree **vdfTree, OpenForward
 	parent = NULL;
 	node   = (*vdfTree)->rootNode;
 	retVal = RETURN_TREEPARSER_CONTINUE;
-	
+
 	while(fgets(line, MAX_LINE_SIZE, pFile)) {
 
 		if(retVal == RETURN_TREEPARSER_SILENT)
 			pfnParse = NULL;
 		else if(retVal == RETURN_TREEPARSER_BREAK)
 			break;
-		
+
 		if(argnum == 1 && pfnParse != NULL)
 			(*pfnParse)(openFW->fwdid, openFW->mdFilename, *vdfTree, node, level);
 
 		argnum = 0;
-		
+
 		tokenizer.SetString(line);
-		
+
 		while(tokenizer.HasMoreTokens()) {
 			if((len = strlen(tokenizer.token))) {
 
@@ -976,14 +974,14 @@ bool VDFTreeParser::OpenVDF(const char *filename, VDFTree **vdfTree, OpenForward
 				// block comments
 				if(tokenizer.token[0] == '/' && tokenizer.token[1] == '/')
 					break;
-				
+
 				// open node
 				else if(!strcmp(tokenizer.token, "{")) {
-					
+
 					parent = node;
 					node = (*vdfTree)->CreateNode();
 					(*vdfTree)->AppendChild(parent, node);
-					
+
 					level++;
 					argnum = 0;
 					newChild = false;
@@ -1022,11 +1020,11 @@ bool VDFTreeParser::OpenVDF(const char *filename, VDFTree **vdfTree, OpenForward
 				}
 				if(argnum == 1)
 					newChild = true;
-					
+
 			}
 		}
 	}
-	
+
 	if(argnum == 1 && pfnParse != NULL)
 		retVal = (*pfnParse)(openFW->fwdid, openFW->mdFilename, *vdfTree, node, level);
 
@@ -1057,7 +1055,7 @@ bool VDFTreeParser::SaveVDF(const char *filename, VDFTree *vdfTree)
 
 	if(filename == NULL || node == NULL)
 		return false;
-	
+
 	pFile = fopen(filename, "w+");
 	if(!pFile)
 		return false;
@@ -1070,7 +1068,7 @@ bool VDFTreeParser::SaveVDF(const char *filename, VDFTree *vdfTree)
 				level--;
 				TABFILL(tabs, level);
 				sprintf(buffer, "%s}\n", tabs);
-				node = node->parentNode;				
+				node = node->parentNode;
 				fputs(buffer, pFile);
 				*buffer = '\0';
 				continue;
@@ -1108,10 +1106,10 @@ bool VDFTreeParser::SaveVDF(const char *filename, VDFTree *vdfTree)
 // --- VDFSearch Implementation ---
 
 VDFSearch::VDFSearch()
-{	
+{
 	searchStr = NULL;
 	levelAnchor = NULL;
-	Reset();	
+	Reset();
 }
 
 VDFSearch::~VDFSearch()
@@ -1126,17 +1124,15 @@ VDFSearch::~VDFSearch()
  *	@return	true if found a/another node that matches search
  */
 bool VDFSearch::FindNext()
-{	
+{
 	if(searchStr == NULL)
 		return false;
 
-	int		level;
 	bool	mayGoDeeper;
 
 	VDFNode *cache;
 	VDFNode *anchor;
-	
-	level = 0;
+
 	mayGoDeeper = false;
 
 	if(cursor == NULL) {
@@ -1144,11 +1140,11 @@ bool VDFSearch::FindNext()
 		if(Match(cursor))
 			return true;
 	}
-	
+
 	while(true) {
-		
+
 		mayGoDeeper = (searchLevel > -1) ? (currentLevel < searchLevel) : true;
-		
+
 		cache = cursor;
 
 		if(cursor == NULL)
@@ -1157,10 +1153,10 @@ bool VDFSearch::FindNext()
 		if(mayGoDeeper && Walk(DIR_CHILD)) {
 			MarkAnchor(cache);
 			currentLevel++;
-	
+
 			if(Match(cursor))
 				return true;
-			
+
 		}
 		else {
 			if(Walk(DIR_NEXT)) {
@@ -1170,9 +1166,9 @@ bool VDFSearch::FindNext()
 			else if(currentLevel) {
 
 				while(currentLevel--) {
-					
+
 					anchor = GetAnchorNode(currentLevel);
-					
+
 					if(anchor) {
 						cursor = anchor->nextNode;
 						levelAnchor[currentLevel] = NULL;
@@ -1190,7 +1186,7 @@ bool VDFSearch::FindNext()
 				break;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -1207,22 +1203,22 @@ VDFNode *VDFSearch::FindNextNode(VDFNode *refNode)
 	if(refNode != cursor) {
 
 		if(refNode != NULL) {
-			
-			cache = refNode;			
-			level = VDFTree::GetNodeLevel(refNode);			
+
+			cache = refNode;
+			level = VDFTree::GetNodeLevel(refNode);
 			currentLevel = level;
 
 			while((cache = cache->parentNode)) {
 				currentLevel--;
 				this->MarkAnchor(cache);
 			}
-			
+
 			// if has no parents, make sure anchor in 0 is empty
 			if((size_t)currentLevel == level)
 				levelAnchor[0] = NULL;
-			
+
 			currentLevel = level;
-			
+
 			cursor = refNode;
 
 		}
@@ -1234,7 +1230,7 @@ VDFNode *VDFSearch::FindNextNode(VDFNode *refNode)
 	if(FindNext())
 		return cursor;
 	return NULL;
-}		
+}
 
 
 /**
@@ -1296,9 +1292,9 @@ bool VDFSearch::Match(VDFNode *matchNode)
 	bool	mayCheckMatch;
 
 	mayCheckMatch = (searchLevel > -1) ? (currentLevel == searchLevel) : true;
-	
+
 	if(!mayCheckMatch)
-		return false;	
+		return false;
 
 	cache = NULL;
 	param = (searchFlags & VDF_MATCH_VALUE) ? matchNode->value : matchNode->key;
@@ -1313,13 +1309,13 @@ bool VDFSearch::Match(VDFNode *matchNode)
 		cache = new char[strlen(param) + 1];
 		ToLowerCase(param, cache);
 		param = cache;
-	}	
+	}
 
 	match = (strcmp(param, searchStr) == 0);
 
 	FinalizeArray(cache);
 
-	return match;	
+	return match;
 }
 
 
@@ -1333,7 +1329,7 @@ bool VDFSearch::Match(VDFNode *matchNode)
  *						VDF_MATCH_VALUE </code><br>and<code>
  *						VDF_IGNORE_CASE
  *	@param	level		Level in which search will be valid. When -1 (default)
- *						all levels match.				
+ *						all levels match.
  */
 void VDFSearch::SetSearch(VDFTree *schTree, char *search, UINT flags, int level)
 {
@@ -1341,14 +1337,14 @@ void VDFSearch::SetSearch(VDFTree *schTree, char *search, UINT flags, int level)
 	searchLevel =	level;
 	searchFlags =	flags;
 	searchTree	=	schTree;
-	
+
 	const UINT startAnchors = 6;
 
 	searchStr = new char[strlen(search) + 1];
-	
+
 	if(flags & VDF_IGNORE_CASE)
-		ToLowerCase(search, searchStr); 
-	else 	
+		ToLowerCase(search, searchStr);
+	else
 		strcpy(searchStr, search);
 
 	// start with 6 levels to avoid unnecessary grows
@@ -1387,10 +1383,10 @@ VDFCollection::VDFCollection()
 
 	parseForward = new ParseForward*[MAX_PARSE_FORWARDS];
 	openForward = new OpenForward*[MAX_OPEN_FORWARDS];
-	
+
 	memset(parseForward, 0, MAX_PARSE_FORWARDS);
 	memset(openForward, 0, MAX_OPEN_FORWARDS);
-	
+
 }
 
 VDFCollection::~VDFCollection()
@@ -1405,7 +1401,7 @@ VDFCollection::~VDFCollection()
 void VDFCollection::Destroy()
 {
 	size_t i;
-	
+
 	for(i = 0; i < treeCounter; i++) {
 		if(vdfTrees[i] == NULL)
 			continue;
@@ -1419,7 +1415,7 @@ void VDFCollection::Destroy()
 			continue;
 		Finalize(vdfSearch[i]);
 	}
-	
+
 	FinalizeArray(vdfSearch);
 	FinalizeArray(parseForward);
 	FinalizeArray(openForward);
@@ -1435,7 +1431,7 @@ void VDFCollection::Destroy()
  */
 int VDFCollection::GetFreeParserID()
 {
-	
+
 	for(UINT i = 0; i < MAX_PARSE_FORWARDS; i++) {
 		if(parseForward[i] == NULL)
 			return i;
@@ -1450,7 +1446,7 @@ int VDFCollection::GetFreeParserID()
  */
 int VDFCollection::GetFreeOpenTreeID()
 {
-	
+
 	for(UINT i = 0; i < MAX_PARSE_FORWARDS; i++) {
 		if(openForward[i] == NULL)
 			return i;
@@ -1466,10 +1462,10 @@ int VDFCollection::GetFreeOpenTreeID()
 void VDFCollection::ParseTree(const char *filename, ParseForward *pFW)
 {
 	VDFTreeParser parser;
-	
+
 	if(pFW == NULL)
 		return;
-	
+
 	parser.ParseVDF(filename, pFW);
 }
 
@@ -1486,7 +1482,7 @@ VDFTree *VDFCollection::AddTree(const char *filename, bool create, OpenForward *
 {
 	VDFTreeParser	parser;
 	VDFTree		*vdfTree;
-	
+
 	vdfTree  = NULL;
 
 	if(create) {
@@ -1499,11 +1495,11 @@ VDFTree *VDFCollection::AddTree(const char *filename, bool create, OpenForward *
 	}
 
 	GrowPArray(&vdfTrees, treeCounter);
-	
+
 	vdfTrees[treeCounter] = new VDFEnum;
-	vdfTrees[treeCounter]->vdfFile = new char[strlen(filename) + 1];	
+	vdfTrees[treeCounter]->vdfFile = new char[strlen(filename) + 1];
 	strcpy(vdfTrees[treeCounter]->vdfFile, filename);
-	vdfTrees[treeCounter]->vdfTree = vdfTree;	
+	vdfTrees[treeCounter]->vdfTree = vdfTree;
 	vdfTree->treeId = treeCounter++;
 
 	return vdfTree;
@@ -1515,13 +1511,13 @@ VDFTree *VDFCollection::AddTree(const char *filename, bool create, OpenForward *
  */
 VDFSearch *VDFCollection::AddSearch()
 {
-	VDFSearch *newSearch;	
-	
-	GrowPArray(&vdfSearch, searchCounter);	
+	VDFSearch *newSearch;
+
+	GrowPArray(&vdfSearch, searchCounter);
 	newSearch = new VDFSearch;
 	newSearch->searchId = searchCounter;
 	vdfSearch[searchCounter++] = newSearch;
-	
+
 	return newSearch;
 }
 
@@ -1539,13 +1535,13 @@ void VDFCollection::SetSearch(VDFSearch *search, VDFTree *tree, char *searchStr,
 										int level, UINT ignoreCase)
 {
 	UINT flags;
-	
+
 	if(search == NULL || tree == NULL)
 		return;
 
 	flags = type | (ignoreCase) ? VDF_IGNORE_CASE : 0;
-	
-	search->SetSearch(tree, searchStr, flags, level);	
+
+	search->SetSearch(tree, searchStr, flags, level);
 }
 
 /**

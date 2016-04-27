@@ -10,7 +10,7 @@
 // flags for search class
 #define VDF_MATCH_KEY			0
 #define VDF_MATCH_VALUE			1
-#define VDF_IGNORE_CASE			1 << 1
+#define VDF_IGNORE_CASE			(1 << 1)
 
 typedef unsigned int UINT;
 
@@ -55,7 +55,7 @@ struct VDFNode
  */
 class VDFTree
 {
-public:	
+public:
 					VDFTree			 ();
 					~VDFTree		 ();
 	void			CreateTree		 ();
@@ -65,9 +65,9 @@ public:
 	VDFNode			*GetNodeById	 (UINT id);
 	void			DeleteNode		 (UINT index);
 	void			DeleteNode		 (VDFNode *Node);
-	
+
 	static void		AppendNode		 (VDFNode *Node, VDFNode *newNode);
-	static void		AppendChild		 (VDFNode *Node, VDFNode *childNode);	
+	static void		AppendChild		 (VDFNode *Node, VDFNode *childNode);
 	static void		SetKeyPair	     (VDFNode *Node, const char *key = NULL, const char *value = NULL);
 	void			SortBranchNodes	 (VDFNode *refNode, bool byKey = true, bool byNumber = false);
 	static VDFNode	*GetRootNode	 (VDFNode *Node);
@@ -89,7 +89,7 @@ public:
 	UINT		treeId;
 
 protected:
-	VDFNode		**nodeIndex;	
+	VDFNode		**nodeIndex;
 };
 
 
@@ -106,7 +106,7 @@ public:
 
 public:
 	char  *token;
-	
+
 private:
 	size_t pos;
 	char  *source;
@@ -120,7 +120,7 @@ typedef int (*PFN_VDFPARSE_KPAIR)	(int fwid, const char *filename,
 									 const char* value,
 									 int level);
 
-typedef int	(*PFN_VDFPARSE_BOF)		(int fwid, const char *filename);
+typedef int (*PFN_VDFPARSE_BOF)		(int fwid, const char *filename);
 typedef int (*PFN_VDFPARSE_EOF)		(int fwid, const char *filename);
 
 /**
@@ -192,13 +192,13 @@ public:
 	UINT		searchId;
 	int			currentLevel;
 protected:
-	int 		searchLevel;	
+	int 		searchLevel;
 	UINT		searchFlags;
 	char		*searchStr;
-	VDFTree		*searchTree;	
+	VDFTree		*searchTree;
 	VDFNode		**levelAnchor;
 	size_t		levelCount;
-	
+
 };
 
 
@@ -213,21 +213,21 @@ struct VDFEnum
 
 
 /**
- *  This class is designed to handle all trees, searches in a plugin session. 
- *	It implements convenient methods to store and destroy trees and searches. 
+ *  This class is designed to handle all trees, searches in a plugin session.
+ *	It implements convenient methods to store and destroy trees and searches.
  */
 class VDFCollection
 {
-public:	
+public:
 	int			GetFreeParserID 	();
 	int			GetFreeOpenTreeID	();
 	void		ParseTree			(const char *filename, ParseForward *parseForward);
-	
+
 	VDFTree		*AddTree			(const char *filename, bool create = false, OpenForward *openForward = NULL);
 	VDFSearch	*AddSearch			();
 	void		SetSearch			(VDFSearch *search,VDFTree *tree, char *searchStr,
-									 UINT type, int level = -1, UINT ignoreCase = 0);	
-	
+									 UINT type, int level = -1, UINT ignoreCase = 0);
+
 	void		RemoveTree			(const UINT index);
 	void		RemoveTree			(VDFTree **tree);
 	void		RemoveSearch		(const UINT index);
@@ -241,7 +241,7 @@ public:
 				~VDFCollection();
 
 	size_t		treeCounter;
-	VDFEnum		**vdfTrees;	
+	VDFEnum		**vdfTrees;
 	size_t		searchCounter;
 	VDFSearch	**vdfSearch;
 
