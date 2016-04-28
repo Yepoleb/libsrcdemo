@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "BitBuffer.hpp"
-#include "Netmessage.hpp"
+#include "NetMessage.hpp"
 
 enum class MessageType
 {

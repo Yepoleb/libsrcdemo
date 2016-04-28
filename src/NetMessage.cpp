@@ -6,7 +6,7 @@
 #include "snappy.h"
 
 #include "BitBuffer.hpp"
-#include "Netmessage.hpp"
+#include "NetMessage.hpp"
 #include "EventParser.hpp"
 #include "helpers.hpp"
 #include "common.hpp"

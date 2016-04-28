@@ -1,4 +1,3 @@
-#include "external/vdfparser.h"
 #include <iostream>
 #include <cstring>
 #include <exception>
@@ -8,6 +7,7 @@
 
 #include "EventParser.hpp"
 #include "BitBuffer.hpp"
+#include "VDFParser/VDFParser.hpp"
 
 EventParser* g_evtparser;
 

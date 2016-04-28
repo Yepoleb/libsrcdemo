@@ -6,7 +6,7 @@
 
 #include "DemoMessage.hpp"
 #include "BitBuffer.hpp"
-#include "Netmessage.hpp"
+#include "NetMessage.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
 
