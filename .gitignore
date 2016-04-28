@@ -1,4 +1,15 @@
+# CodeLite project files
 .codelite
+demotf.mk
+demotf.project
+demotf.txt
+demotf.workspace
+Makefile
 Debug
 Release
+
+# Build directory
+build
+
+# User defined paths
 src/paths.hpp
