@@ -5,7 +5,7 @@
 #define USER_HOME "/home/gaben/"
 #define TF2_PATH JOIN_STRINGS(USER_HOME, ".steam/steamapps/common/Team Fortress 2/")
 
-const char* DEMO_PATH = JOIN_STRINGS(TF2_PATH, "tf/classchange.dem");
+const char* DEMO_PATH = JOIN_STRINGS(TF2_PATH, "tf/send_to_higps.dem");
 
 // Keep these in order!
 const char* EVENT_RESOURCES[] = {

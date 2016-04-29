@@ -5,6 +5,7 @@
 * Default constructors for dem- and netmessages
 * Rename Packet to PacketMsg
 * Decide between classes / structs for netmessages
+* Read vpk files
 * Add parser state
   * Make evtparser local
   * Read demo version from header instead constant
