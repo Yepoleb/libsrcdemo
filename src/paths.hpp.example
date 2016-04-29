@@ -10,6 +10,6 @@ const size_t EVENT_RESOURCES_LEN = 4;
 const char* EVENT_RESOURCES[] = {
     JOIN_STRINGS(TF2_PATH, "hl2/resource/serverevents.res"),
     JOIN_STRINGS(TF2_PATH, "hl2/resource/gameevents.res"),
-    JOIN_STRINGS(USER_HOME, "demotf/data/modevents.res"),
+    JOIN_STRINGS(USER_HOME, "libsrcdemo/data/modevents.res"),
     JOIN_STRINGS(TF2_PATH, "hl2/resource/replayevents.res")
 };

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-set (PROJECT_NAME "demotf")
+set (PROJECT_NAME "libsrcdemo")
 project (${PROJECT_NAME})
 
 set (CMAKE_CXX_FLAGS "-std=c++11")

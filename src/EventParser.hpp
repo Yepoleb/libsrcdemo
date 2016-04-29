@@ -21,6 +21,8 @@ enum class FieldType
     TYPE_BOOL         // unsigned int 1 bit
 };
 
+FieldType parseFieldType(const char* field_str);
+
 struct EventField
 {
     std::string name;

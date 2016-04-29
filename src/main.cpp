@@ -3,7 +3,6 @@
 
 #include "DemoFile.hpp"
 #include "EventParser.hpp"
-#include "helpers.hpp"
 #include "paths.hpp"
 
 int main(int argc, char **argv)
