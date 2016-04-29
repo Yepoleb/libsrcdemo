@@ -15,8 +15,8 @@ const char* ConsoleCmdMsg::name = "ConsoleCmd";
 const char* UserCmdMsg::name = "UserCmdMsg";
 const char* SyncTickMsg::name = "SyncTickMsg";
 const char* DataTablesMsg::name = "DataTablesMsg";
-const char* Packet::name = "Packet";
-const char* Signon::name = "Signon";
+const char* PacketMsg::name = "PacketMsg";
+const char* SignonMsg::name = "SignonMsg";
 const char* StringTablesMsg::name = "StringTablesMsg";
 
 const char* SENDPROPTYPE_NAMES[] =
@@ -313,7 +313,7 @@ std::string DataTablesMsg::toString() const
     return ss.str();
 }
 
-Packet::Packet(const int32_t& tick, const char* data, const size_t& data_size) :
+PacketMsg::PacketMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
     BitBuffer buf(data, data_size);
@@ -428,14 +428,14 @@ Packet::Packet(const int32_t& tick, const char* data, const size_t& data_size) :
     }
 }
 
-Packet::~Packet()
+PacketMsg::~PacketMsg()
 {
     for (NetMsg* msg : messages) {
         delete msg;
     }
 }
 
-std::string Packet::toString() const
+std::string PacketMsg::toString() const
 {
     std::stringstream ss;
     ss << tick << " " << name << std::endl;
@@ -445,15 +445,15 @@ std::string Packet::toString() const
     return ss.str();
 }
 
-Signon::Signon(const int32_t& tick, const char* data, const size_t& data_size) :
-    Packet(tick, data, data_size)
+SignonMsg::SignonMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+    PacketMsg(tick, data, data_size)
 {
 
 }
 
-std::string Signon::toString() const
+std::string SignonMsg::toString() const
 {
-    return Packet::toString();
+    return PacketMsg::toString();
 }
 
 StringTable::StringTable(BitBuffer& buf)

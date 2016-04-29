@@ -75,10 +75,10 @@ DemoFile::DemoFile(std::string filename)
         switch (type)
         {
             case MessageType::Signon:
-                msg = static_cast<DemoMessage*>(new Signon(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new SignonMsg(tick, data, data_size));
                 break;
             case MessageType::Packet:
-                msg = static_cast<DemoMessage*>(new Packet(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new PacketMsg(tick, data, data_size));
                 break;
             case MessageType::ConsoleCmd:
                 msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size));

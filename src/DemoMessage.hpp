@@ -169,11 +169,11 @@ public:
     static const MessageType type = MessageType::SyncTick;
 };
 
-class Packet : public DemoMessage
+class PacketMsg : public DemoMessage
 {
 public:
-    Packet(const int32_t& tick, const char* data, const size_t& data_size);
-    virtual ~Packet();
+    PacketMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual ~PacketMsg();
     virtual std::string toString() const;
 
     static const char* name;
@@ -181,11 +181,11 @@ public:
     std::vector<NetMsg*> messages;
 };
 
-class Signon : public Packet
+class SignonMsg : public PacketMsg
 {
 public:
-    Signon(const int32_t& tick, const char* data, const size_t& data_size);
-    virtual ~Signon() = default;
+    SignonMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    virtual ~SignonMsg() = default;
     virtual std::string toString() const;
 
     static const char* name;
