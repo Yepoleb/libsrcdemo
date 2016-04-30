@@ -522,8 +522,7 @@ public:
     static const char* name;
     static const NetMsgType type = NetMsgType::SVC_GAMEEVENTLIST;
     uint16_t num_events;
-    size_t length;
-    std::vector<char> data;
+    std::vector<EventDescriptor> descriptors;
 };
 
 class SVC_GetCvarValue : public NetMsg

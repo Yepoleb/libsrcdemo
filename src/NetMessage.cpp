@@ -758,8 +758,24 @@ std::string SVC_Menu::toString() const
 SVC_GameEventList::SVC_GameEventList(BitBuffer& buf)
 {
     num_events = buf.ReadBits(MAX_EVENT_BITS);
-    length = buf.ReadBits(20);
-    data = buf.ReadData(length);
+    buf.Seek(20); // skip length
+
+    for (size_t event_i = 0; event_i < num_events; event_i++) {
+        EventDescriptor desc;
+        desc.id = buf.ReadBits(MAX_EVENT_BITS);
+        desc.name = buf.ReadString();
+        while (true) {
+            EventField field;
+            field.type = static_cast<FieldType>(buf.ReadBits(3));
+            if (field.type == FieldType::TYPE_LOCAL) {
+                break;
+            }
+            field.name = buf.ReadString();
+            desc.fields.push_back(field);
+        }
+        descriptors.push_back(desc);
+        g_evtparser->addDescriptor(desc);
+    }
 }
 
 std::string SVC_GameEventList::toString() const
@@ -767,8 +783,9 @@ std::string SVC_GameEventList::toString() const
     std::stringstream ss;
     ss << name << std::endl;
     ss << "  num_events: " << num_events << std::endl;
-    ss << "  length: " << length << std::endl;
-    ss << format_data(data) << std::endl;
+    for (const EventDescriptor& desc : descriptors) {
+        ss << indent(desc.toString(), 2) << std::endl;
+    }
     return ss.str();
 }
 

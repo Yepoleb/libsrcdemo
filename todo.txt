@@ -9,6 +9,7 @@
 * Add parser state
   * Make evtparser local
   * Read demo version from header instead constant
+* BitBuffer length in bits
 
 * Implement SVC_PacketEntities
 * Implement SVC_GameEventList

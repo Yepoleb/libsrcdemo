@@ -33,6 +33,16 @@ FieldType parseFieldType(const char* field_str)
     throw std::exception();
 }
 
+std::string EventDescriptor::toString() const
+{
+    std::stringstream ss;
+    ss << "Event " << id << " " << name << std::endl;
+    for (const EventField& field : fields) {
+        ss << "  " << EVENT_FIELD_TYPE_MAP[(int)field.type] << " " << field.name << std::endl;
+    }
+    return ss.str();
+}
+
 std::string Event::toString() const
 {
     std::stringstream ss;
@@ -85,69 +95,83 @@ void EventParser::loadFile(const char* path)
 
     VDFNode* root = tree->rootNode;
 
-    VDFNode* event_node = root->childNode;
-    while (event_node != nullptr) {
-        char* event_name = event_node->key;
-        EventDescriptor descriptor;
-        descriptor.name = event_name;
+    for (VDFNode* event_node = root->childNode;
+            event_node != nullptr;
+            event_node = event_node->nextNode) {
+        std::string event_name = event_node->key;
 
         // Workaround for parser error
-        if (descriptor.name != "{}") {
-            VDFNode* field_node = event_node->childNode;
-            while (field_node != nullptr) {
-                char* field_name = field_node->key;
-                if (field_name != nullptr) {
-                    FieldType field_type = parseFieldType(field_node->value);
-                    EventField field = {field_name, field_type};
-                    descriptor.fields.push_back(field);
-                }
-                field_node = field_node->nextNode;
-            }
-
-            size_t old_index = getIndex(event_name);
-
-            if (old_index == SIZE_T_MAX) {
-                events.push_back(descriptor);
-            } else {
-                events[old_index] = descriptor;
-            }
+        if (event_name == "{}") {
+            continue;
         }
 
-        event_node = event_node->nextNode;
+        EventDescriptor descriptor;
+        descriptor.name = event_name;
+        descriptor.id = -1;
+
+        VDFNode* field_node = event_node->childNode;
+        while (field_node != nullptr) {
+            char* field_name = field_node->key;
+            if (field_name != nullptr) {
+                FieldType field_type = parseFieldType(field_node->value);
+                EventField field = {field_type, field_name};
+                descriptor.fields.push_back(field);
+            }
+            field_node = field_node->nextNode;
+        }
+
+        addDescriptor(descriptor);
     }
 
     delete tree;
 }
 
-size_t EventParser::getIndex(const std::string& name)
+bool EventParser::addDescriptor(EventDescriptor desc)
 {
-    for (size_t i_desc = 0; i_desc < events.size(); i_desc++) {
-        EventDescriptor& descriptor = events[i_desc];
-        if (descriptor.name == name) {
-            return i_desc;
+    EventDescriptor* old_desc;
+    old_desc = getDescriptor(desc.name);
+
+    if (old_desc == nullptr) {
+        if (descriptors.empty()) {
+            desc.id = 0;
+        } else {
+            desc.id = descriptors.back().id + 1;
         }
+        descriptors.push_back(desc);
+        return false;
+    } else {
+        if (desc.id != -1) {
+            desc.id = old_desc->id;
+        }
+        *old_desc = desc;
+        return true;
     }
-    return SIZE_T_MAX;
 }
 
-EventDescriptor* EventParser::getDescriptor(size_t event_id)
+EventDescriptor* EventParser::getDescriptor(const size_t event_id)
 {
-    if (event_id < events.size()) {
-        return &events.at(event_id);
-    } else {
-        return nullptr;
+    for (EventDescriptor& desc : descriptors) {
+        if (desc.id == event_id) {
+            return &desc;
+        }
     }
+    return nullptr;
+}
+
+EventDescriptor* EventParser::getDescriptor(const std::string& name)
+{
+    for (EventDescriptor& desc : descriptors) {
+        if (desc.name == name) {
+            return &desc;
+        }
+    }
+    return nullptr;
 }
 
 void EventParser::printEvents()
 {
-    for (size_t i_event = 0; i_event < events.size(); i_event++) {
-        const EventDescriptor& descriptor = events[i_event];
-        std::cout << "Event " << i_event << " " << descriptor.name << std::endl;
-        for (const EventField& field : descriptor.fields) {
-            std::cout << "  " << EVENT_FIELD_TYPE_MAP[(int)field.type] << " " << field.name << std::endl;
-        }
-        std::cout << std::endl;
+    for (const EventDescriptor& desc : descriptors) {
+        std::cout << desc.toString() << std::endl;
     }
 }
 

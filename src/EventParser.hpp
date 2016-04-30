@@ -25,12 +25,15 @@ FieldType parseFieldType(const char* field_str);
 
 struct EventField
 {
-    std::string name;
     FieldType type;
+    std::string name;
 };
 
 struct EventDescriptor
 {
+    std::string toString() const;
+
+    uint16_t id;
     std::string name;
     std::vector<EventField> fields;
 };
@@ -65,10 +68,11 @@ public:
     EventParser() { };
     void loadFile(const char* path);
     void loadFile(const std::string& path);
-    size_t getIndex(const std::string& name);
-    EventDescriptor* getDescriptor(size_t event_id);
+    bool addDescriptor(EventDescriptor desc);
+    EventDescriptor* getDescriptor(const size_t event_id);
+    EventDescriptor* getDescriptor(const std::string& name);
     void printEvents();
     Event parseEvent(BitBuffer& buf);
-public:
-    std::vector<EventDescriptor> events;
+private:
+    std::vector<EventDescriptor> descriptors;
 };
