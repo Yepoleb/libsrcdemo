@@ -11,6 +11,6 @@ public:
     SignonMsg(const int32_t& tick, const char* data, const size_t& data_size);
     virtual ~SignonMsg() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "DataTablesMsg"; };
-    virtual MessageType getType() const { return MessageType::DataTables; };
+    virtual std::string getName() const { return "SignonMsg"; };
+    virtual MessageType getType() const { return MessageType::SIGNON; };
 };

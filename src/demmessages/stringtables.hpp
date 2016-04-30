@@ -16,7 +16,7 @@ public:
     virtual ~StringTablesMsg();
     virtual std::string toString() const;
     virtual std::string getName() const { return "StringTablesMsg"; };
-    virtual MessageType getType() const { return MessageType::StringTables; };
+    virtual MessageType getType() const { return MessageType::STRINGTABLES; };
 
     std::vector<StringTable*> tables;
 };

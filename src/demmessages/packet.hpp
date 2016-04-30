@@ -14,7 +14,7 @@ public:
     virtual ~PacketMsg();
     virtual std::string toString() const;
     virtual std::string getName() const { return "PacketMsg"; };
-    virtual MessageType getType() const { return MessageType::Packet; };
+    virtual MessageType getType() const { return MessageType::PACKET; };
 
     std::vector<NetMsg*> messages;
 };

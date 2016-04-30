@@ -53,7 +53,7 @@ public:
     virtual ~DataTablesMsg();
     virtual std::string toString() const;
     virtual std::string getName() const { return "DataTablesMsg"; };
-    virtual MessageType getType() const { return MessageType::DataTables; };
+    virtual MessageType getType() const { return MessageType::DATATABLES; };
 
     std::vector<DataTable*> tables;
     std::vector<ClassInfo> classes;

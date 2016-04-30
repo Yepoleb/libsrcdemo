@@ -10,7 +10,7 @@
 #include "demmessages/synctick.hpp"
 #include "demmessages/consolecmd.hpp"
 #include "demmessages/usercmd.hpp"
-#include "demmessages/datatable.hpp"
+#include "demmessages/datatables.hpp"
 #include "demmessages/stringtables.hpp"
 #include "demofile.hpp"
 
@@ -47,7 +47,7 @@ DemoFile::DemoFile(std::string filename)
     {
         DemoMessage* msg;
         MessageType type = static_cast<MessageType>(ReadInt8(file));
-        if (type == MessageType::Stop)
+        if (type == MessageType::STOP)
             break;
         int32_t tick = ReadInt32(file);
         char* data;
@@ -55,21 +55,21 @@ DemoFile::DemoFile(std::string filename)
 
         switch (type)
         {
-            case MessageType::Signon:
-            case MessageType::Packet:
-            case MessageType::ConsoleCmd:
-            case MessageType::UserCmd:
-            case MessageType::DataTables:
-            case MessageType::StringTables: {
-                if (type == MessageType::Packet or type == MessageType::Signon)
+            case MessageType::SIGNON:
+            case MessageType::PACKET:
+            case MessageType::CONSOLECMD:
+            case MessageType::USERCMD:
+            case MessageType::DATATABLES:
+            case MessageType::STRINGTABLES: {
+                if (type == MessageType::PACKET or type == MessageType::SIGNON)
                     file.seekg(0x54, std::ios::cur); // command/sequence info
-                else if (type == MessageType::UserCmd)
+                else if (type == MessageType::USERCMD)
                     file.seekg(0x4, std::ios::cur); // unknown
                 data_size = ReadInt32(file);
                 data = ReadBytes(file, data_size);
                 break;
             }
-            case MessageType::SyncTick: {
+            case MessageType::SYNCTICK: {
                 data = nullptr;
                 data_size = 0;
                 break;
@@ -81,25 +81,25 @@ DemoFile::DemoFile(std::string filename)
 
         switch (type)
         {
-            case MessageType::Signon:
+            case MessageType::SIGNON:
                 msg = static_cast<DemoMessage*>(new SignonMsg(tick, data, data_size));
                 break;
-            case MessageType::Packet:
+            case MessageType::PACKET:
                 msg = static_cast<DemoMessage*>(new PacketMsg(tick, data, data_size));
                 break;
-            case MessageType::ConsoleCmd:
+            case MessageType::CONSOLECMD:
                 msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size));
                 break;
-            case MessageType::UserCmd:
+            case MessageType::USERCMD:
                 msg = static_cast<DemoMessage*>(new UserCmdMsg(tick, data, data_size));
                 break;
-            case MessageType::DataTables:
+            case MessageType::DATATABLES:
                 msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size));
                 break;
-            case MessageType::StringTables:
+            case MessageType::STRINGTABLES:
                 msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
                 break;
-            case MessageType::SyncTick:
+            case MessageType::SYNCTICK:
                 msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
                 break;
             default:

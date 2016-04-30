@@ -6,14 +6,14 @@
 
 enum class MessageType
 {
-    Signon = 1,
-    Packet,
-    SyncTick,
-    ConsoleCmd,
-    UserCmd,
-    DataTables,
-    Stop,
-    StringTables
+    SIGNON = 1,
+    PACKET,
+    SYNCTICK,
+    CONSOLECMD,
+    USERCMD,
+    DATATABLES,
+    STOP,
+    STRINGTABLES
 };
 
 class DemoMessage

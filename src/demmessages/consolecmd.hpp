@@ -11,7 +11,7 @@ public:
     virtual ~ConsoleCmdMsg() = default;
     virtual std::string toString() const;
     virtual std::string getName() const { return "ConsoleCmdMsg"; };
-    virtual MessageType getType() const { return MessageType::ConsoleCmd; };
+    virtual MessageType getType() const { return MessageType::CONSOLECMD; };
 
     std::string command;
 };

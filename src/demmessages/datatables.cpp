@@ -4,7 +4,7 @@
 
 #include "bitbuffer.hpp"
 #include "helpers.hpp"
-#include "datatable.hpp"
+#include "datatables.hpp"
 
 const char* SENDPROPTYPE_NAMES[] =
 {
