@@ -6,9 +6,9 @@ Library for parsing the original source demo format. It's used by most games bas
 
 1. Copy `src/paths.hpp.example` to `src/paths.hpp`
 2. Define `DEMO_PATH` to point to a demo file. You don't have to use defines, just make sure the path can be understood by the stdlib.
-3. Define the event resource file paths. `modevents.res` has to be extracted from `resource/` inside `tf/tf2_misc_dir.vpk`.
 
 ##Building
+
 Run the usual CMake commands:
 
     mkdir build
@@ -16,6 +16,10 @@ Run the usual CMake commands:
     cmake ..
     make
     ./libsrcdemo
+
+##Credits
+
+commonbullet - [vdfparser]
 
 ##License
 

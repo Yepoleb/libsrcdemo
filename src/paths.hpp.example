@@ -8,6 +8,10 @@
 
 const char* DEMO_PATH = JOIN_STRINGS(TF2_PATH, "tf/send_to_higps.dem");
 
+// Define to load event definitions from resource files.
+//#define LOAD_EVENT_RESOURCES
+
+#ifdef LOAD_EVENT_RESOURCES
 // Keep these in order!
 const char* EVENT_RESOURCES[] = {
     JOIN_STRINGS(TF2_PATH, "hl2/resource/serverevents.res"),
@@ -17,4 +21,5 @@ const char* EVENT_RESOURCES[] = {
     JOIN_STRINGS(TF2_PATH, "hl2/resource/replayevents.res")
 };
 const size_t EVENT_RESOURCES_LEN = ARRAY_LEN(EVENT_RESOURCES);
+#endif
 
