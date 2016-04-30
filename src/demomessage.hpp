@@ -3,8 +3,11 @@
 #include <string>
 #include <vector>
 
-#include "bitbuffer.hpp"
-#include "netmessage.hpp"
+#include "common.hpp"
+
+class BitBuffer;
+class NetMsg;
+class STableEntry;
 
 enum class MessageType
 {

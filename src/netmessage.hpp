@@ -4,8 +4,9 @@
 #include <vector>
 #include <utility>
 
-#include "bitbuffer.hpp"
 #include "eventparser.hpp"
+
+class BitBuffer;
 
 // SVC_CreateStringTable
 const size_t MAX_USERDATA_BITS = 14;

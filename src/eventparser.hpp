@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "bitbuffer.hpp"
-
 class EventParser;
+class BitBuffer;
+
 extern EventParser* g_evtparser;
 
 const size_t MAX_EVENT_BITS = 9;

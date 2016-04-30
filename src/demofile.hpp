@@ -4,7 +4,7 @@
 #include <vector>
 #include <exception>
 
-#include "demomessage.hpp"
+class DemoMessage;
 
 struct DemoHeader
 {
