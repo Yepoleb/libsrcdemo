@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "VDFParser.hpp"
+#include "vdfparser.hpp"
 
 
 /*

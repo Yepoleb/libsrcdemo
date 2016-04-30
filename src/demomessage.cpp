@@ -4,9 +4,9 @@
 #include <iostream>
 #include <cassert>
 
-#include "DemoMessage.hpp"
-#include "BitBuffer.hpp"
-#include "NetMessage.hpp"
+#include "demomessage.hpp"
+#include "bitbuffer.hpp"
+#include "netmessage.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
 

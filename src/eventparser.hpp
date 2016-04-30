@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "BitBuffer.hpp"
+#include "bitbuffer.hpp"
 
 class EventParser;
 extern EventParser* g_evtparser;

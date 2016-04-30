@@ -5,9 +5,9 @@
 #include <cmath>
 #include "snappy.h"
 
-#include "BitBuffer.hpp"
-#include "NetMessage.hpp"
-#include "EventParser.hpp"
+#include "bitbuffer.hpp"
+#include "netmessage.hpp"
+#include "eventparser.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
 
@@ -520,6 +520,8 @@ SVC_Sounds::SVC_Sounds(BitBuffer& buf)
     }
 
     data = buf.ReadData(length);
+    // public/soundinfo.h SoundInfo_t::ReadDelta
+    // engine/servermsghandler.cpp CClientState::ProcessSounds
 }
 
 std::string SVC_Sounds::toString() const
@@ -662,8 +664,6 @@ std::string SVC_GameEvent::toString() const
     std::stringstream ss;
     ss << name << std::endl;
     ss << "  event:\n" << indent(event.toString(), 4);
-    ss << "  length: " << length << std::endl;
-    ss << format_data(data) << std::endl;
     return ss.str();
 }
 

@@ -5,9 +5,9 @@
 #include <vector>
 #include <sstream>
 
-#include "EventParser.hpp"
-#include "BitBuffer.hpp"
-#include "VDFParser/VDFParser.hpp"
+#include "eventparser.hpp"
+#include "bitbuffer.hpp"
+#include "vdfparser/vdfparser.hpp"
 
 EventParser* g_evtparser;
 

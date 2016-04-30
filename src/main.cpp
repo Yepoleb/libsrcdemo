@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdint.h>
 
-#include "DemoFile.hpp"
-#include "EventParser.hpp"
+#include "demofile.hpp"
+#include "eventparser.hpp"
 #include "paths.hpp"
 
 int main(int argc, char **argv)

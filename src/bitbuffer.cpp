@@ -5,7 +5,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "BitBuffer.hpp"
+#include "bitbuffer.hpp"
 
 const uint8_t MTBL[] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 

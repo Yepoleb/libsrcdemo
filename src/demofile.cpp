@@ -4,8 +4,8 @@
 #include <iostream>
 #include <vector>
 
-#include "DemoFile.hpp"
-#include "DemoMessage.hpp"
+#include "demofile.hpp"
+#include "demomessage.hpp"
 
 DemoFile::DemoFile(std::string filename)
 {
