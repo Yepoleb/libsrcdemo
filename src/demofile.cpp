@@ -4,8 +4,15 @@
 #include <iostream>
 #include <vector>
 
+#include "demmessages/demmessage.hpp"
+#include "demmessages/signon.hpp"
+#include "demmessages/packet.hpp"
+#include "demmessages/synctick.hpp"
+#include "demmessages/consolecmd.hpp"
+#include "demmessages/usercmd.hpp"
+#include "demmessages/datatable.hpp"
+#include "demmessages/stringtables.hpp"
 #include "demofile.hpp"
-#include "demomessage.hpp"
 
 DemoFile::DemoFile(std::string filename)
 {

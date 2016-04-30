@@ -1,10 +1,9 @@
 * Check if dem_stringtables can occur after svc_createstringtables
 * Fix VDF parser interpreting {} as name
+* Read vpk files
 * Proper exceptions
-* One file per dem_msg
 * Default constructors for dem- and netmessages
 * Decide between classes / structs for netmessages
-* Read vpk files
 * Split into lib and tool
 * Add parser state
   * Make evtparser local
@@ -12,4 +11,4 @@
 * BitBuffer length in bits
 
 * Implement SVC_PacketEntities
-* Implement SVC_GameEventList
+

@@ -7,6 +7,7 @@
 #include "eventparser.hpp"
 
 class BitBuffer;
+class STableEntry;
 
 // SVC_CreateStringTable
 const size_t MAX_USERDATA_BITS = 14;
@@ -87,20 +88,7 @@ inline uint32_t SwapU32(uint32_t num)
     return swapped;
 }
 
-class STableEntry
-{
-public:
-    STableEntry();
-    STableEntry(size_t p_index, const std::string& p_name);
-    STableEntry(size_t p_index, const std::string& p_name, size_t p_length, const std::vector<char>& p_data);
-    void fromBuffer(size_t p_index, BitBuffer& buf);
-    std::string toString() const;
 
-    size_t index;
-    std::string name;
-    size_t length;
-    std::vector<char> data;
-};
 
 class NetMsg
 {

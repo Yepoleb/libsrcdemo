@@ -6,10 +6,11 @@
 #include "snappy.h"
 
 #include "bitbuffer.hpp"
-#include "netmessage.hpp"
 #include "eventparser.hpp"
+#include "demmessages/stringtables.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
+#include "netmessage.hpp"
 
 const char* NetMsg::name = "Unknown Packet";
 const char* NET_Nop::name = "NET_Nop";
@@ -45,50 +46,6 @@ const char* SVC_GetCvarValue::name = "SVC_GetCvarValue";
 
 const uint32_t LZSS_MAGIC = SwapU32(('L' << 24) | ('Z' << 16) | ('S' << 8) | ('S'));
 const uint32_t SNAPPY_MAGIC = SwapU32(('S' << 24) | ('N' << 16) | ('A' << 8) | ('P'));
-
-STableEntry::STableEntry()
-{
-    length = 0;
-}
-
-STableEntry::STableEntry(size_t p_index, const std::string& p_name)
-{
-    index = p_index;
-    name = p_name;
-    length = 0;
-}
-
-STableEntry::STableEntry(size_t p_index, const std::string& p_name, size_t p_length, const std::vector<char>& p_data)
-{
-    index = p_index;
-    name = p_name;
-    length = p_length;
-    data = p_data;
-}
-
-void STableEntry::fromBuffer(size_t p_index, BitBuffer& buf)
-{
-    index = p_index;
-    name = buf.ReadString();
-    bool has_data = buf.ReadBool();
-    if (has_data) {
-        // Length in bytes!
-        length = buf.ReadU16() * 8;
-        data = buf.ReadData(length);
-    } else {
-        length = 0;
-    }
-}
-
-std::string STableEntry::toString() const
-{
-    std::stringstream ss;
-    ss << index << ": " << name << std::endl;
-    if (length) {
-        ss << format_data(data) << std::endl;
-    }
-    return ss.str();
-}
 
 NET_Nop::NET_Nop(BitBuffer& buf)
 { }
