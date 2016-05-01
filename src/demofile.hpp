@@ -32,7 +32,7 @@ class DemoException : public std::exception
 class DemoFile
 {
 public:
-    DemoFile(std::string filename);
+    explicit DemoFile(std::string filename);
     ~DemoFile();
     DemoHeader getHeader() const { return m_header; };
     std::vector<DemoMessage*> getMessages() const { return m_messages; };

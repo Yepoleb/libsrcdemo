@@ -24,7 +24,7 @@ public:
 class StringTable
 {
 public:
-    StringTable(BitBuffer& buf);
+    explicit StringTable(BitBuffer& buf);
     std::string toString() const;
 
     std::string name;

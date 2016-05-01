@@ -79,6 +79,7 @@ std::string StringTable::toString() const
 
 STableEntry::STableEntry()
 {
+    index = 0;
     length = 0;
 }
 
