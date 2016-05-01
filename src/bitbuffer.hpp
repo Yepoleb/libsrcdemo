@@ -9,24 +9,24 @@ class BitBuffer
 {
 public:
     BitBuffer(const char* data, size_t size);
-    void Seek(size_t bits);
-    uint32_t ReadBits(size_t bits);
-    std::vector<char> ReadData(size_t bits);
-    bool ReadBool();
-    uint8_t ReadU8();
-    uint16_t ReadU16();
-    uint32_t ReadU32();
-    int8_t ReadS8();
-    int16_t ReadS16();
-    int32_t ReadS32();
-    uint32_t ReadVarU32();
-    float ReadFloat();
-    std::string ReadString();
-    float ReadCoord();
-    VecCoord ReadVecCoord();
+    void seek(size_t bits);
+    uint32_t readBits(size_t bits);
+    std::vector<char> readData(size_t bits);
+    bool readBool();
+    uint8_t readU8();
+    uint16_t readU16();
+    uint32_t readU32();
+    int8_t readS8();
+    int16_t readS16();
+    int32_t readS32();
+    uint32_t readVarU32();
+    float readFloat();
+    std::string readString();
+    float readCoord();
+    VecCoord readVecCoord();
     float ReadBitAngle(size_t bits);
-    size_t BitsLeft();
-    size_t GetPos() const {return m_pos;};
+    size_t bitsLeft();
+    size_t getPos() const {return m_pos;};
 
 private:
     const char* m_buffer;

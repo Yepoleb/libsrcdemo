@@ -27,7 +27,7 @@ std::string NET_Nop::toString() const
 
 NET_Disconnect::NET_Disconnect(BitBuffer& buf)
 {
-    reason = buf.ReadString();
+    reason = buf.readString();
 }
 
 std::string NET_Disconnect::toString() const
@@ -40,9 +40,9 @@ std::string NET_Disconnect::toString() const
 
 NET_File::NET_File(BitBuffer& buf)
 {
-    transfer_id = buf.ReadU32();
-    filename = buf.ReadString();
-    requested = buf.ReadBool();
+    transfer_id = buf.readU32();
+    filename = buf.readString();
+    requested = buf.readBool();
 }
 
 std::string NET_File::toString() const
@@ -58,9 +58,9 @@ std::string NET_File::toString() const
 
 NET_Tick::NET_Tick(BitBuffer& buf)
 {
-    tick = buf.ReadS32();
-    host_frametime = buf.ReadU16();
-    host_ftime_stddev = buf.ReadU16();
+    tick = buf.readS32();
+    host_frametime = buf.readU16();
+    host_ftime_stddev = buf.readU16();
 #ifdef DEBUG_TICKS
     std::cout << "tick: " << tick << std::endl;
 #endif
@@ -78,7 +78,7 @@ std::string NET_Tick::toString() const
 
 NET_StringCmd::NET_StringCmd(BitBuffer& buf)
 {
-    command = buf.ReadString();
+    command = buf.readString();
 }
 
 std::string NET_StringCmd::toString() const
@@ -91,10 +91,10 @@ std::string NET_StringCmd::toString() const
 
 NET_SetConVar::NET_SetConVar(BitBuffer& buf)
 {
-    uint8_t num = buf.ReadU8();
+    uint8_t num = buf.readU8();
     for (uint8_t i = 0; i < num; i++) {
-        std::string key = buf.ReadString();
-        std::string value = buf.ReadString();
+        std::string key = buf.readString();
+        std::string value = buf.readString();
         vars.push_back(strpair(key, value));
     }
 }
@@ -111,8 +111,8 @@ std::string NET_SetConVar::toString() const
 
 NET_SignonState::NET_SignonState(BitBuffer& buf)
 {
-    signon_state = buf.ReadU8();
-    spawn_count = buf.ReadS32();
+    signon_state = buf.readU8();
+    spawn_count = buf.readS32();
 }
 
 std::string NET_SignonState::toString() const
@@ -126,7 +126,7 @@ std::string NET_SignonState::toString() const
 
 SVC_Print::SVC_Print(BitBuffer& buf)
 {
-    text = buf.ReadString();
+    text = buf.readString();
 }
 
 std::string SVC_Print::toString() const
@@ -139,27 +139,27 @@ std::string SVC_Print::toString() const
 
 SVC_ServerInfo::SVC_ServerInfo(BitBuffer& buf)
 {
-    protocol = buf.ReadS16();
-    server_count = buf.ReadS32();
-    is_sourcetv = buf.ReadBool();
-    is_dedicated = buf.ReadBool();
-    client_crc = buf.ReadU32();
-    max_classes = buf.ReadU16();
+    protocol = buf.readS16();
+    server_count = buf.readS32();
+    is_sourcetv = buf.readBool();
+    is_dedicated = buf.readBool();
+    client_crc = buf.readU32();
+    max_classes = buf.readU16();
     if (protocol < 18) {
-        map_crc = buf.ReadU32();
+        map_crc = buf.readU32();
     } else {
-        map_md5 = buf.ReadData(128);
+        map_md5 = buf.readData(128);
     }
-    current_players = buf.ReadU8();
-    max_players = buf.ReadU8();
-    tick_interval = buf.ReadFloat();
-    platform = buf.ReadS8();
-    game_dir = buf.ReadString();
-    map_name = buf.ReadString();
-    sky_name = buf.ReadString();
-    host_name = buf.ReadString();
+    current_players = buf.readU8();
+    max_players = buf.readU8();
+    tick_interval = buf.readFloat();
+    platform = buf.readS8();
+    game_dir = buf.readString();
+    map_name = buf.readString();
+    sky_name = buf.readString();
+    host_name = buf.readString();
     if (protocol > 15) {
-        has_replay = buf.ReadBool();
+        has_replay = buf.readBool();
     }
 }
 
@@ -195,9 +195,9 @@ std::string SVC_ServerInfo::toString() const
 
 SVC_SendTable::SVC_SendTable(BitBuffer& buf)
 {
-    needs_decoder = buf.ReadBool();
-    length = buf.ReadS16();
-    data = buf.ReadData(length);
+    needs_decoder = buf.readBool();
+    length = buf.readS16();
+    data = buf.readData(length);
 }
 
 std::string SVC_SendTable::toString() const
@@ -213,15 +213,15 @@ std::string SVC_SendTable::toString() const
 
 SVC_ClassInfo::SVC_ClassInfo(BitBuffer& buf)
 {
-    num_classes = buf.ReadS16();
+    num_classes = buf.readS16();
     size_t class_bits = std::log2(num_classes) + 1;
-    create_on_client = buf.ReadBool();
+    create_on_client = buf.readBool();
     if (!create_on_client) {
         for (size_t i = 0; i < num_classes; i++) {
             ClassInfo class_info;
-            class_info.class_id = buf.ReadBits(class_bits);
-            class_info.classname = buf.ReadString();
-            class_info.tablename = buf.ReadString();
+            class_info.class_id = buf.readBits(class_bits);
+            class_info.classname = buf.readString();
+            class_info.tablename = buf.readString();
             classes.push_back(class_info);
         }
     }
@@ -248,7 +248,7 @@ std::string SVC_ClassInfo::toString() const
 
 SVC_SetPause::SVC_SetPause(BitBuffer& buf)
 {
-    pause = buf.ReadBool();
+    pause = buf.readBool();
 }
 
 std::string SVC_SetPause::toString() const
@@ -262,41 +262,41 @@ std::string SVC_SetPause::toString() const
 
 SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
 {
-    tablename = buf.ReadString();
-    max_entries = buf.ReadU16();
+    tablename = buf.readString();
+    max_entries = buf.readU16();
     size_t encode_bits = std::log2(max_entries);
-    num_entries = buf.ReadBits(encode_bits + 1);
+    num_entries = buf.readBits(encode_bits + 1);
     size_t length;
     if (NETPROTOCOL_VERSION >= 24) {
-        length = buf.ReadVarU32();
+        length = buf.readVarU32();
     } else {
-        length = buf.ReadBits(NET_MAX_PALYLOAD_BITS + 3);
+        length = buf.readBits(NET_MAX_PALYLOAD_BITS + 3);
     }
 
-    userdata_fixed_size = buf.ReadBool();
+    userdata_fixed_size = buf.readBool();
     if (userdata_fixed_size) {
-        userdata_size = buf.ReadBits(12);
-        userdata_size_bits = buf.ReadBits(4);
+        userdata_size = buf.readBits(12);
+        userdata_size_bits = buf.readBits(4);
     } else {
         userdata_size = 0;
         userdata_size_bits = 0;
     }
 
     if (NETPROTOCOL_VERSION >= 15) {
-        is_compressed = buf.ReadBool();
+        is_compressed = buf.readBool();
     }
 
-    std::vector<char> data = buf.ReadData(length);
+    std::vector<char> data = buf.readData(length);
 
     BitBuffer data_buf(data.data(), length);
     std::vector<char> decompressed_data;
     if (is_compressed) {
-        size_t decompressed_size = data_buf.ReadU32();
-        size_t compressed_size = data_buf.ReadU32() - 4;
-        uint32_t magic = data_buf.ReadU32();
+        size_t decompressed_size = data_buf.readU32();
+        size_t compressed_size = data_buf.readU32() - 4;
+        uint32_t magic = data_buf.readU32();
         std::vector<char> compressed_data;
         decompressed_data.resize(decompressed_size);
-        compressed_data = data_buf.ReadData(compressed_size * 8);
+        compressed_data = data_buf.readData(compressed_size * 8);
         if (magic == LZSS_MAGIC) {
             std::cerr << "LZSS compression is not supported" << std::endl;
             throw std::exception();
@@ -312,33 +312,33 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
     std::vector<std::string> history;
     size_t entry_index = 0;
     for (int32_t i = 0; i < num_entries; i++) {
-        if (not data_buf.ReadBool()) {
-            entry_index = data_buf.ReadBits(encode_bits);
+        if (not data_buf.readBool()) {
+            entry_index = data_buf.readBits(encode_bits);
         }
 
         STableEntry entry;
         entry.index = entry_index;
-        if (data_buf.ReadBool()) {
-            bool has_basestring = data_buf.ReadBool();
+        if (data_buf.readBool()) {
+            bool has_basestring = data_buf.readBool();
             if (has_basestring) {
-                uint8_t substr_index = data_buf.ReadBits(5);
-                uint8_t substr_length = data_buf.ReadBits(SUBSTRING_BITS);
+                uint8_t substr_index = data_buf.readBits(5);
+                uint8_t substr_length = data_buf.readBits(SUBSTRING_BITS);
                 std::string basestring = history.at(substr_index);
                 std::string substring = basestring.substr(0, substr_length);
-                entry.name = substring + data_buf.ReadString();
+                entry.name = substring + data_buf.readString();
             } else {
-                entry.name = data_buf.ReadString();
+                entry.name = data_buf.readString();
             }
         }
 
-        if (data_buf.ReadBool()) {
+        if (data_buf.readBool()) {
             if (userdata_fixed_size) {
                 entry.length = userdata_size_bits;
-                entry.data = data_buf.ReadData(userdata_size_bits);
+                entry.data = data_buf.readData(userdata_size_bits);
             } else {
-                size_t userdata_size = data_buf.ReadBits(MAX_USERDATA_BITS) * 8;
+                size_t userdata_size = data_buf.readBits(MAX_USERDATA_BITS) * 8;
                 entry.length = userdata_size;
-                entry.data = data_buf.ReadData(userdata_size);
+                entry.data = data_buf.readData(userdata_size);
             }
         } else {
             entry.length = 0;
@@ -377,15 +377,15 @@ std::string SVC_CreateStringTable::toString() const
 
 SVC_UpdateStringTable::SVC_UpdateStringTable(BitBuffer& buf)
 {
-    table_id = buf.ReadBits(std::log2(MAX_TABLES));
-    if (buf.ReadBool()) {
-        changed_entries = buf.ReadU16();
+    table_id = buf.readBits(std::log2(MAX_TABLES));
+    if (buf.readBool()) {
+        changed_entries = buf.readU16();
     } else {
         changed_entries = 1;
     }
 
-    length = buf.ReadBits(20);
-    data = buf.ReadData(length);
+    length = buf.readBits(20);
+    data = buf.readData(length);
 }
 
 std::string SVC_UpdateStringTable::toString() const
@@ -401,8 +401,8 @@ std::string SVC_UpdateStringTable::toString() const
 
 SVC_VoiceInit::SVC_VoiceInit(BitBuffer& buf)
 {
-    codec_name = buf.ReadString();
-    quality = buf.ReadU8();
+    codec_name = buf.readString();
+    quality = buf.readU8();
 }
 
 std::string SVC_VoiceInit::toString() const
@@ -416,10 +416,10 @@ std::string SVC_VoiceInit::toString() const
 
 SVC_VoiceData::SVC_VoiceData(BitBuffer& buf)
 {
-    from_client = buf.ReadU8();
-    proximity = buf.ReadU8();
-    length = buf.ReadU16();
-    data = buf.ReadData(length);
+    from_client = buf.readU8();
+    proximity = buf.readU8();
+    length = buf.readU16();
+    data = buf.readData(length);
 }
 
 std::string SVC_VoiceData::toString() const
@@ -435,16 +435,16 @@ std::string SVC_VoiceData::toString() const
 
 SVC_Sounds::SVC_Sounds(BitBuffer& buf)
 {
-    reliable_sound = buf.ReadBool();
+    reliable_sound = buf.readBool();
     if (reliable_sound) {
         num_sounds = 1;
-        length = buf.ReadU8();
+        length = buf.readU8();
     } else {
-        num_sounds = buf.ReadU8();
-        length = buf.ReadU16();
+        num_sounds = buf.readU8();
+        length = buf.readU16();
     }
 
-    data = buf.ReadData(length);
+    data = buf.readData(length);
     // public/soundinfo.h SoundInfo_t::ReadDelta
     // engine/servermsghandler.cpp CClientState::ProcessSounds
 }
@@ -463,7 +463,7 @@ std::string SVC_Sounds::toString() const
 
 SVC_SetView::SVC_SetView(BitBuffer& buf)
 {
-    entity_index = buf.ReadBits(MAX_EDICT_BITS);
+    entity_index = buf.readBits(MAX_EDICT_BITS);
 }
 
 std::string SVC_SetView::toString() const
@@ -476,7 +476,7 @@ std::string SVC_SetView::toString() const
 
 SVC_FixAngle::SVC_FixAngle(BitBuffer& buf)
 {
-    relative = buf.ReadBool();
+    relative = buf.readBool();
     angle.x = buf.ReadBitAngle(16);
     angle.y = buf.ReadBitAngle(16);
     angle.z = buf.ReadBitAngle(16);
@@ -513,16 +513,16 @@ std::string SVC_CrosshairAngle::toString() const
 
 SVC_BSPDecal::SVC_BSPDecal(BitBuffer& buf)
 {
-    pos = buf.ReadVecCoord();
-    decal_texture_index = buf.ReadBits(MAX_DECAL_INDEX_BITS);
-    if (buf.ReadBool()) {
-        entity_index = buf.ReadBits(MAX_EDICT_BITS);
-        model_index = buf.ReadBits(SP_MODEL_INDEX_BITS);
+    pos = buf.readVecCoord();
+    decal_texture_index = buf.readBits(MAX_DECAL_INDEX_BITS);
+    if (buf.readBool()) {
+        entity_index = buf.readBits(MAX_EDICT_BITS);
+        model_index = buf.readBits(SP_MODEL_INDEX_BITS);
     } else {
         entity_index = 0;
         model_index = 0;
     }
-    low_priority = buf.ReadBool();
+    low_priority = buf.readBool();
 }
 
 std::string SVC_BSPDecal::toString() const
@@ -542,9 +542,9 @@ std::string SVC_BSPDecal::toString() const
 
 SVC_UserMessage::SVC_UserMessage(BitBuffer& buf)
 {
-    msg_type = buf.ReadU8();
-    length = buf.ReadBits(11);
-    data = buf.ReadData(length);
+    msg_type = buf.readU8();
+    length = buf.readBits(11);
+    data = buf.readData(length);
 }
 
 std::string SVC_UserMessage::toString() const
@@ -559,10 +559,10 @@ std::string SVC_UserMessage::toString() const
 
 SVC_EntityMessage::SVC_EntityMessage(BitBuffer& buf)
 {
-    entity_index = buf.ReadBits(MAX_EDICT_BITS);
-    class_id = buf.ReadBits(MAX_SERVER_CLASS_BITS);
-    length = buf.ReadBits(11);
-    data = buf.ReadData(length);
+    entity_index = buf.readBits(MAX_EDICT_BITS);
+    class_id = buf.readBits(MAX_SERVER_CLASS_BITS);
+    length = buf.readBits(11);
+    data = buf.readData(length);
 }
 
 std::string SVC_EntityMessage::toString() const
@@ -578,8 +578,8 @@ std::string SVC_EntityMessage::toString() const
 
 SVC_GameEvent::SVC_GameEvent(BitBuffer& buf)
 {
-    length = buf.ReadBits(11);
-    data = buf.ReadData(length);
+    length = buf.readBits(11);
+    data = buf.readData(length);
     BitBuffer data_buf(data.data(), length);
     event = g_evtparser->parseEvent(data_buf);
 }
@@ -594,18 +594,18 @@ std::string SVC_GameEvent::toString() const
 
 SVC_PacketEntities::SVC_PacketEntities(BitBuffer& buf)
 {
-    max_entries = buf.ReadBits(MAX_EDICT_BITS);
-    is_delta = buf.ReadBool();
+    max_entries = buf.readBits(MAX_EDICT_BITS);
+    is_delta = buf.readBool();
     if (is_delta) {
-        delta_from = buf.ReadS32();
+        delta_from = buf.readS32();
     } else {
         delta_from = -1;
     }
-    baseline = buf.ReadBool();
-    updated_entries = buf.ReadBits(MAX_EDICT_BITS);
-    length = buf.ReadBits(DELTASIZE_BITS);
-    update_baseline = buf.ReadBool();
-    data = buf.ReadData(length);
+    baseline = buf.readBool();
+    updated_entries = buf.readBits(MAX_EDICT_BITS);
+    length = buf.readBits(DELTASIZE_BITS);
+    update_baseline = buf.readBool();
+    data = buf.readData(length);
 }
 
 std::string SVC_PacketEntities::toString() const
@@ -628,13 +628,13 @@ std::string SVC_PacketEntities::toString() const
 
 SVC_TempEntities::SVC_TempEntities(BitBuffer& buf)
 {
-    num_entries = buf.ReadBits(EVENT_INDEX_BITS);
+    num_entries = buf.readBits(EVENT_INDEX_BITS);
     if (NETPROTOCOL_VERSION >= 24) {
-        length = buf.ReadVarU32();
+        length = buf.readVarU32();
     } else {
-        length = buf.ReadBits(NET_MAX_PALYLOAD_BITS);
+        length = buf.readBits(NET_MAX_PALYLOAD_BITS);
     }
-    data = buf.ReadData(length);
+    data = buf.readData(length);
 }
 
 std::string SVC_TempEntities::toString() const
@@ -650,7 +650,7 @@ std::string SVC_TempEntities::toString() const
 SVC_Prefetch::SVC_Prefetch(BitBuffer& buf)
 {
     fetch_type = 0; // SOUND, should be enum
-    sound_index = buf.ReadBits(MAX_SOUND_INDEX_BITS);
+    sound_index = buf.readBits(MAX_SOUND_INDEX_BITS);
 }
 
 std::string SVC_Prefetch::toString() const
@@ -664,10 +664,10 @@ std::string SVC_Prefetch::toString() const
 
 SVC_Menu::SVC_Menu(BitBuffer& buf)
 {
-    dialog_type = static_cast<DialogType>(buf.ReadU16());
-    length = buf.ReadU16();
+    dialog_type = static_cast<DialogType>(buf.readU16());
+    length = buf.readU16();
     // TODO: Parse KeyValues
-    data = buf.ReadData(length);
+    data = buf.readData(length);
 }
 
 std::string SVC_Menu::toString() const
@@ -682,23 +682,23 @@ std::string SVC_Menu::toString() const
 
 SVC_GameEventList::SVC_GameEventList(BitBuffer& buf)
 {
-    num_events = buf.ReadBits(MAX_EVENT_BITS);
-    length = buf.ReadBits(20);
-    data = buf.ReadData(length);
+    num_events = buf.readBits(MAX_EVENT_BITS);
+    length = buf.readBits(20);
+    data = buf.readData(length);
 
     BitBuffer data_buf(data.data(), length);
 
     for (size_t event_i = 0; event_i < num_events; event_i++) {
         EventDescriptor desc;
-        desc.id = data_buf.ReadBits(MAX_EVENT_BITS);
-        desc.name = data_buf.ReadString();
+        desc.id = data_buf.readBits(MAX_EVENT_BITS);
+        desc.name = data_buf.readString();
         while (true) {
             EventField field;
-            field.type = static_cast<FieldType>(data_buf.ReadBits(3));
+            field.type = static_cast<FieldType>(data_buf.readBits(3));
             if (field.type == FieldType::TYPE_LOCAL) {
                 break;
             }
-            field.name = data_buf.ReadString();
+            field.name = data_buf.readString();
             desc.fields.push_back(field);
         }
         descriptors.push_back(desc);
@@ -719,8 +719,8 @@ std::string SVC_GameEventList::toString() const
 
 SVC_GetCvarValue::SVC_GetCvarValue(BitBuffer& buf)
 {
-    cookie = buf.ReadS32();
-    cvar_name = buf.ReadString();
+    cookie = buf.readS32();
+    cvar_name = buf.readString();
 }
 
 std::string SVC_GetCvarValue::toString() const

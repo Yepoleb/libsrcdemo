@@ -16,12 +16,12 @@ BitBuffer::BitBuffer(const char* data, size_t size)
     m_pos = 0;
 }
 
-void BitBuffer::Seek(size_t bits)
+void BitBuffer::seek(size_t bits)
 {
     m_pos += bits;
 }
 
-uint32_t BitBuffer::ReadBits(size_t bits)
+uint32_t BitBuffer::readBits(size_t bits)
 {
     assert(bits <= 32);
     uint32_t ret = 0;
@@ -45,61 +45,61 @@ uint32_t BitBuffer::ReadBits(size_t bits)
     return ret;
 }
 
-std::vector<char> BitBuffer::ReadData(size_t bits)
+std::vector<char> BitBuffer::readData(size_t bits)
 {
     std::vector<char> bytes;
     size_t left = bits;
 
     while (left > 0) {
         size_t toget = std::min((size_t)8, left);
-        char c = static_cast<char>(ReadBits(toget));
+        char c = static_cast<char>(readBits(toget));
         bytes.push_back(c);
         left -= toget;
     }
     return bytes;
 }
 
-bool BitBuffer::ReadBool()
+bool BitBuffer::readBool()
 {
-    return ReadBits(1);
+    return readBits(1);
 }
 
-uint8_t BitBuffer::ReadU8()
+uint8_t BitBuffer::readU8()
 {
-    return static_cast<uint8_t>(ReadBits(8));
+    return static_cast<uint8_t>(readBits(8));
 }
 
-uint16_t BitBuffer::ReadU16()
+uint16_t BitBuffer::readU16()
 {
-    return static_cast<uint16_t>(ReadBits(16));
+    return static_cast<uint16_t>(readBits(16));
 }
 
-uint32_t BitBuffer::ReadU32()
+uint32_t BitBuffer::readU32()
 {
-    return ReadBits(32);
+    return readBits(32);
 }
 
-int8_t BitBuffer::ReadS8()
+int8_t BitBuffer::readS8()
 {
-    return static_cast<int8_t>(ReadBits(8));
+    return static_cast<int8_t>(readBits(8));
 }
 
-int16_t BitBuffer::ReadS16()
+int16_t BitBuffer::readS16()
 {
-    return static_cast<int16_t>(ReadBits(16));
+    return static_cast<int16_t>(readBits(16));
 }
 
-int32_t BitBuffer::ReadS32()
+int32_t BitBuffer::readS32()
 {
-    return static_cast<int32_t>(ReadBits(32));
+    return static_cast<int32_t>(readBits(32));
 }
 
 // Reads a varint encoded integer
-uint32_t BitBuffer::ReadVarU32()
+uint32_t BitBuffer::readVarU32()
 {
     uint32_t number = 0;
     for (size_t count = 0; count < sizeof(uint32_t); count++) {
-        uint8_t b = ReadU8();
+        uint8_t b = readU8();
         // Add lower 7 bits to the number
         number |= (b & 0b01111111) << (7 * count);
         // Break if msb is not set
@@ -116,21 +116,21 @@ union UInt32FloatUnion
     float v_float;
 };
 
-float BitBuffer::ReadFloat()
+float BitBuffer::readFloat()
 {
     // There's just no pretty way to interpret a uint32 as float
-    uint32_t float_bits = ReadBits(32);
+    uint32_t float_bits = readBits(32);
     UInt32FloatUnion ifunion;
     ifunion.v_int = float_bits;
     return ifunion.v_float;
 }
 
-std::string BitBuffer::ReadString()
+std::string BitBuffer::readString()
 {
     std::vector<char> temp;
     while (true)
     {
-        char c = static_cast<char>(ReadBits(8));
+        char c = static_cast<char>(readBits(8));
         if (c == 0) {
             break;
         }
@@ -139,19 +139,19 @@ std::string BitBuffer::ReadString()
     return std::string(temp.data(), temp.size());
 }
 
-float BitBuffer::ReadCoord()
+float BitBuffer::readCoord()
 {
-    bool hasint = ReadBool();
-    bool hasfract = ReadBool();
+    bool hasint = readBool();
+    bool hasfract = readBool();
     float value = 0;
 
     if (hasint || hasfract)
     {
-        bool sign = ReadBool();
+        bool sign = readBool();
         if (hasint)
-            value += ReadBits(14) + 1;
+            value += readBits(14) + 1;
         if (hasfract)
-            value += ReadBits(5) * (1 / 32.f);
+            value += readBits(5) * (1 / 32.f);
         if (sign)
             value = -value;
     }
@@ -159,16 +159,16 @@ float BitBuffer::ReadCoord()
     return value;
 }
 
-VecCoord BitBuffer::ReadVecCoord()
+VecCoord BitBuffer::readVecCoord()
 {
-    bool hasx = ReadBool();
-    bool hasy = ReadBool();
-    bool hasz = ReadBool();
+    bool hasx = readBool();
+    bool hasy = readBool();
+    bool hasz = readBool();
 
     return VecCoord {
-        hasx ? ReadCoord() : 0,
-        hasy ? ReadCoord() : 0,
-        hasz ? ReadCoord() : 0
+        hasx ? readCoord() : 0,
+        hasy ? readCoord() : 0,
+        hasz ? readCoord() : 0
     };
 }
 
@@ -176,12 +176,12 @@ float BitBuffer::ReadBitAngle(size_t bits)
 {
     float shift = (1 << bits);
     // TODO: find a better name for the variable
-    uint32_t x = ReadBits(bits);
+    uint32_t x = readBits(bits);
     float number = (float)x * (360.f / shift);
     return number;
 }
 
-size_t BitBuffer::BitsLeft()
+size_t BitBuffer::bitsLeft()
 {
     return m_size - m_pos;
 }

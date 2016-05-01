@@ -177,7 +177,7 @@ void EventParser::printEvents()
 
 Event EventParser::parseEvent(BitBuffer& buf)
 {
-    uint16_t event_id = buf.ReadBits(MAX_EVENT_BITS);
+    uint16_t event_id = buf.readBits(MAX_EVENT_BITS);
     EventDescriptor* desc = getDescriptor(event_id);
     Event event;
     if (desc == nullptr) {
@@ -198,22 +198,22 @@ Event EventParser::parseEvent(BitBuffer& buf)
             case FieldType::TYPE_LOCAL:
                 break;
             case FieldType::TYPE_STRING:
-                val.v_string = buf.ReadString();
+                val.v_string = buf.readString();
                 break;
             case FieldType::TYPE_FLOAT:
-                val.v_float = buf.ReadFloat();
+                val.v_float = buf.readFloat();
                 break;
             case FieldType::TYPE_LONG:
-                val.v_long = buf.ReadS32();
+                val.v_long = buf.readS32();
                 break;
             case FieldType::TYPE_SHORT:
-                val.v_short = buf.ReadS16();
+                val.v_short = buf.readS16();
                 break;
             case FieldType::TYPE_BYTE:
-                val.v_byte = buf.ReadU8();
+                val.v_byte = buf.readU8();
                 break;
             case FieldType::TYPE_BOOL:
-                val.v_bool = buf.ReadBool();
+                val.v_bool = buf.readBool();
                 break;
             default:
                 throw std::exception();

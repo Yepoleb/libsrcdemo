@@ -28,38 +28,38 @@ DataTablesMsg::DataTablesMsg(const int32_t& tick, const char* data, const size_t
         nflag_bits = 11;
     }
 
-    while (buf.ReadBool()) {
+    while (buf.readBool()) {
         DataTable* table = new DataTable;
-        table->needs_decoder = buf.ReadBool();
-        table->name = buf.ReadString();
-        uint16_t num_props = buf.ReadBits(PROPINFOBITS_NUMPROPS);
+        table->needs_decoder = buf.readBool();
+        table->name = buf.readString();
+        uint16_t num_props = buf.readBits(PROPINFOBITS_NUMPROPS);
         for (size_t i_prop = 0; i_prop < num_props; i_prop++) {
             SendProp prop;
-            prop.type = static_cast<SendPropType>(buf.ReadBits(PROPINFOBITS_TYPE));
-            prop.name = buf.ReadString();
-            prop.flags = buf.ReadBits(nflag_bits);
+            prop.type = static_cast<SendPropType>(buf.readBits(PROPINFOBITS_TYPE));
+            prop.name = buf.readString();
+            prop.flags = buf.readBits(nflag_bits);
 
             bool is_exclude = prop.flags & SPROP_EXCLUDE;
             if (prop.type == SendPropType::DPT_DataTable or is_exclude) {
-                prop.exclude_dt_name = buf.ReadString();
+                prop.exclude_dt_name = buf.readString();
             } else if (prop.type == SendPropType::DPT_Array) {
-                prop.num_elements = buf.ReadBits(PROPINFOBITS_NUMELEMENTS);
+                prop.num_elements = buf.readBits(PROPINFOBITS_NUMELEMENTS);
             } else {
-                prop.flow_value = buf.ReadFloat();
-                prop.fhigh_value = buf.ReadFloat();
-                prop.nbits = buf.ReadBits(PROPINFOBITS_NUMBITS);
+                prop.flow_value = buf.readFloat();
+                prop.fhigh_value = buf.readFloat();
+                prop.nbits = buf.readBits(PROPINFOBITS_NUMBITS);
             }
             table->props.push_back(prop);
         }
         tables.push_back(table);
     }
 
-    uint16_t num_classes = buf.ReadU16();
+    uint16_t num_classes = buf.readU16();
     for (size_t i_class = 0; i_class < num_classes; i_class++) {
         ClassInfo info;
-        info.class_id = buf.ReadU16();
-        info.classname = buf.ReadString();
-        info.tablename = buf.ReadString();
+        info.class_id = buf.readU16();
+        info.classname = buf.readString();
+        info.tablename = buf.readString();
         classes.push_back(info);
     }
 }

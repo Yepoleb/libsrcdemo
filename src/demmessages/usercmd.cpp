@@ -12,60 +12,60 @@ UserCmdMsg::UserCmdMsg(const int32_t& tick, const char* data, const size_t& data
     BitBuffer buf(data, data_size * 8);
     fields = 0;
 
-    if (buf.ReadBool()) {
-        command_number = buf.ReadU32();
+    if (buf.readBool()) {
+        command_number = buf.readU32();
         fields |= USERCMD_COMMAND_NUMBER;
     }
-    if (buf.ReadBool()) {
-        tick_count = buf.ReadU32();
+    if (buf.readBool()) {
+        tick_count = buf.readU32();
         fields |= USERCMD_TICK_COUNT;
     }
-    if (buf.ReadBool()) {
-        viewangles.x = buf.ReadFloat();
+    if (buf.readBool()) {
+        viewangles.x = buf.readFloat();
         fields |= USERCMD_VIEWANGLES_X;
     }
-    if (buf.ReadBool()) {
-        viewangles.y = buf.ReadFloat();
+    if (buf.readBool()) {
+        viewangles.y = buf.readFloat();
         fields |= USERCMD_VIEWANGLES_Y;
     }
-    if (buf.ReadBool()) {
-        viewangles.z = buf.ReadFloat();
+    if (buf.readBool()) {
+        viewangles.z = buf.readFloat();
         fields |= USERCMD_VIEWANGLES_Z;
     }
-    if (buf.ReadBool()) {
-        forwardmove = buf.ReadFloat();
+    if (buf.readBool()) {
+        forwardmove = buf.readFloat();
         fields |= USERCMD_FORWARDMOVE;
     }
-    if (buf.ReadBool()) {
-        sidemove = buf.ReadFloat();
+    if (buf.readBool()) {
+        sidemove = buf.readFloat();
         fields |= USERCMD_SIDEMOVE;
     }
-    if (buf.ReadBool()) {
-        upmove = buf.ReadFloat();
+    if (buf.readBool()) {
+        upmove = buf.readFloat();
         fields |= USERCMD_UPMOVE;
     }
-    if (buf.ReadBool()) {
-        buttons = buf.ReadU32();
+    if (buf.readBool()) {
+        buttons = buf.readU32();
         fields |= USERCMD_BUTTONS;
     }
-    if (buf.ReadBool()) {
-        impulse = buf.ReadU8();
+    if (buf.readBool()) {
+        impulse = buf.readU8();
         fields |= USERCMD_IMPULSE;
     }
-    if (buf.ReadBool()) {
-        weaponselect = buf.ReadBits(MAX_EDICT_BITS);
+    if (buf.readBool()) {
+        weaponselect = buf.readBits(MAX_EDICT_BITS);
         fields |= USERCMD_WEAPONSELECT;
-        if (buf.ReadBool()) {
-            weaponsubtype = buf.ReadBits(WEAPON_SUBTYPE_BITS);
+        if (buf.readBool()) {
+            weaponsubtype = buf.readBits(WEAPON_SUBTYPE_BITS);
             fields |= USERCMD_WEAPONSUBTYPE;
         }
     }
-    if (buf.ReadBool()) {
-        mousedx = buf.ReadS16();
+    if (buf.readBool()) {
+        mousedx = buf.readS16();
         fields |= USERCMD_MOUSEDX;
     }
-    if (buf.ReadBool()) {
-        mousedy = buf.ReadS16();
+    if (buf.readBool()) {
+        mousedy = buf.readS16();
         fields |= USERCMD_MOUSEDY;
     }
 }

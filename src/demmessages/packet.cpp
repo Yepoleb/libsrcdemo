@@ -13,8 +13,8 @@ PacketMsg::PacketMsg(const int32_t& tick, const char* data, const size_t& data_s
     DemoMessage(tick)
 {
     BitBuffer buf(data, data_size * 8);
-    while (buf.BitsLeft() > 6) {
-        NetMsgType msg_type = static_cast<NetMsgType>(buf.ReadBits(6));
+    while (buf.bitsLeft() > 6) {
+        NetMsgType msg_type = static_cast<NetMsgType>(buf.readBits(6));
         NetMsg* p_msg;
         switch (msg_type) {
             case NetMsgType::NET_NOP:
