@@ -12,38 +12,6 @@
 #include "common.hpp"
 #include "netmessage.hpp"
 
-const char* NetMsg::name = "Unknown Packet";
-const char* NET_Nop::name = "NET_Nop";
-const char* NET_Disconnect::name = "NET_Disconnect";
-const char* NET_File::name = "NET_File";
-const char* NET_Tick::name = "NET_Tick";
-const char* NET_StringCmd::name = "NET_StringCmd";
-const char* NET_SetConVar::name = "NET_SetConVar";
-const char* NET_SignonState::name = "NET_SignonState";
-const char* SVC_Print::name = "SVC_Print";
-const char* SVC_ServerInfo::name = "SVC_ServerInfo";
-const char* SVC_SendTable::name = "SVC_SendTable";
-const char* SVC_ClassInfo::name = "SVC_ClassInfo";
-const char* SVC_SetPause::name = "SVC_SetPause";
-const char* SVC_CreateStringTable::name = "SVC_CreateStringTable";
-const char* SVC_UpdateStringTable::name = "SVC_UpdateStringTable";
-const char* SVC_VoiceInit::name = "SVC_VoiceInit";
-const char* SVC_VoiceData::name = "SVC_VoiceData";
-const char* SVC_Sounds::name = "SVC_Sounds";
-const char* SVC_SetView::name = "SVC_SetView";
-const char* SVC_FixAngle::name = "SVC_FixAngle";
-const char* SVC_CrosshairAngle::name = "SVC_CrosshairAngle";
-const char* SVC_BSPDecal::name = "SVC_BSPDecal";
-const char* SVC_UserMessage::name = "SVC_UserMessage";
-const char* SVC_EntityMessage::name = "SVC_EntityMessage";
-const char* SVC_GameEvent::name = "SVC_GameEvent";
-const char* SVC_PacketEntities::name = "SVC_PacketEntities";
-const char* SVC_TempEntities::name = "SVC_TempEntities";
-const char* SVC_Prefetch::name = "SVC_Prefetch";
-const char* SVC_Menu::name = "SVC_Menu";
-const char* SVC_GameEventList::name = "SVC_GameEventList";
-const char* SVC_GetCvarValue::name = "SVC_GetCvarValue";
-
 const uint32_t LZSS_MAGIC = SwapU32(('L' << 24) | ('Z' << 16) | ('S' << 8) | ('S'));
 const uint32_t SNAPPY_MAGIC = SwapU32(('S' << 24) | ('N' << 16) | ('A' << 8) | ('P'));
 
@@ -53,7 +21,7 @@ NET_Nop::NET_Nop(BitBuffer& buf)
 std::string NET_Nop::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     return ss.str();
 }
 
@@ -65,7 +33,7 @@ NET_Disconnect::NET_Disconnect(BitBuffer& buf)
 std::string NET_Disconnect::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  reason: " << reason << std::endl;
     return ss.str();
 }
@@ -80,7 +48,7 @@ NET_File::NET_File(BitBuffer& buf)
 std::string NET_File::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  transfer_id: " << transfer_id << std::endl;
     ss << "  filename: " << filename << std::endl;
@@ -101,7 +69,7 @@ NET_Tick::NET_Tick(BitBuffer& buf)
 std::string NET_Tick::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  tick: " << tick << std::endl;
     ss << "  host_frametime: " << host_frametime << std::endl;
     ss << "  host_ftime_stddev: " << host_ftime_stddev << std::endl;
@@ -116,7 +84,7 @@ NET_StringCmd::NET_StringCmd(BitBuffer& buf)
 std::string NET_StringCmd::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  command: " << command << std::endl;
     return ss.str();
 }
@@ -134,7 +102,7 @@ NET_SetConVar::NET_SetConVar(BitBuffer& buf)
 std::string NET_SetConVar::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     for (const strpair& pair : vars) {
         ss << "  " << pair.first << ": " << pair.second << std::endl;
     }
@@ -150,7 +118,7 @@ NET_SignonState::NET_SignonState(BitBuffer& buf)
 std::string NET_SignonState::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  signon_state: " << (int)signon_state << std::endl;
     ss << "  spawn_count: " << spawn_count << std::endl;
     return ss.str();
@@ -164,7 +132,7 @@ SVC_Print::SVC_Print(BitBuffer& buf)
 std::string SVC_Print::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  text: " << text << std::endl;
     return ss.str();
 }
@@ -198,7 +166,7 @@ SVC_ServerInfo::SVC_ServerInfo(BitBuffer& buf)
 std::string SVC_ServerInfo::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  protocol: " << protocol << std::endl;
     ss << "  server_count: " << server_count << std::endl;
@@ -235,7 +203,7 @@ SVC_SendTable::SVC_SendTable(BitBuffer& buf)
 std::string SVC_SendTable::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  needs_decoder: " << needs_decoder << std::endl;
     ss << "  length: " << length << std::endl;
@@ -262,7 +230,7 @@ SVC_ClassInfo::SVC_ClassInfo(BitBuffer& buf)
 std::string SVC_ClassInfo::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  num_classes: " << num_classes << std::endl;
     ss << "  create_on_client: " << create_on_client << std::endl;
@@ -286,7 +254,7 @@ SVC_SetPause::SVC_SetPause(BitBuffer& buf)
 std::string SVC_SetPause::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  pause: " << pause << std::endl;
     return ss.str();
@@ -390,7 +358,7 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
 std::string SVC_CreateStringTable::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  tablename: " << tablename << std::endl;
     ss << "  max_entries: " << max_entries << std::endl;
@@ -423,7 +391,7 @@ SVC_UpdateStringTable::SVC_UpdateStringTable(BitBuffer& buf)
 std::string SVC_UpdateStringTable::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  table_id: " << table_id << std::endl;
     ss << "  changed_entries: " << changed_entries << std::endl;
     ss << "  length: " << length << std::endl;
@@ -440,7 +408,7 @@ SVC_VoiceInit::SVC_VoiceInit(BitBuffer& buf)
 std::string SVC_VoiceInit::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  codec_name: " << codec_name << std::endl;
     ss << "  quality: " << (int)quality << std::endl;
     return ss.str();
@@ -457,7 +425,7 @@ SVC_VoiceData::SVC_VoiceData(BitBuffer& buf)
 std::string SVC_VoiceData::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  from_client: " << from_client << std::endl;
     ss << "  proximity: " << proximity << std::endl;
     ss << "  length: " << length << std::endl;
@@ -484,7 +452,7 @@ SVC_Sounds::SVC_Sounds(BitBuffer& buf)
 std::string SVC_Sounds::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  reliable_sound: " << reliable_sound << std::endl;
     ss << "  num_sounds: " << (int)num_sounds << std::endl;
@@ -501,7 +469,7 @@ SVC_SetView::SVC_SetView(BitBuffer& buf)
 std::string SVC_SetView::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  entity_index: " << entity_index << std::endl;
     return ss.str();
 }
@@ -517,7 +485,7 @@ SVC_FixAngle::SVC_FixAngle(BitBuffer& buf)
 std::string SVC_FixAngle::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  relative: " << relative << std::endl;
     ss << "  angle.x: " << angle.x << std::endl;
@@ -536,7 +504,7 @@ SVC_CrosshairAngle::SVC_CrosshairAngle(BitBuffer& buf)
 std::string SVC_CrosshairAngle::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  angle.x: " << angle.x << std::endl;
     ss << "  angle.y: " << angle.y << std::endl;
     ss << "  angle.z: " << angle.z << std::endl;
@@ -560,7 +528,7 @@ SVC_BSPDecal::SVC_BSPDecal(BitBuffer& buf)
 std::string SVC_BSPDecal::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  pos.x: " << pos.x << std::endl;
     ss << "  pos.y: " << pos.y << std::endl;
@@ -582,7 +550,7 @@ SVC_UserMessage::SVC_UserMessage(BitBuffer& buf)
 std::string SVC_UserMessage::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  msg_type: " << (int)msg_type << std::endl;
     ss << "  length: " << length << std::endl;
     ss << format_data(data) << std::endl;
@@ -600,7 +568,7 @@ SVC_EntityMessage::SVC_EntityMessage(BitBuffer& buf)
 std::string SVC_EntityMessage::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  entity_index: " << entity_index << std::endl;
     ss << "  class_id: " << class_id << std::endl;
     ss << "  length: " << length << std::endl;
@@ -619,7 +587,7 @@ SVC_GameEvent::SVC_GameEvent(BitBuffer& buf)
 std::string SVC_GameEvent::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  event:\n" << indent(event.toString(), 4);
     return ss.str();
 }
@@ -643,7 +611,7 @@ SVC_PacketEntities::SVC_PacketEntities(BitBuffer& buf)
 std::string SVC_PacketEntities::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << std::boolalpha;
     ss << "  max_entries: " << max_entries << std::endl;
     ss << "  updated_entries: " << updated_entries << std::endl;
@@ -672,7 +640,7 @@ SVC_TempEntities::SVC_TempEntities(BitBuffer& buf)
 std::string SVC_TempEntities::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  num_entries: " << (int)num_entries << std::endl;
     ss << "  length: " << length << std::endl;
     ss << format_data(data) << std::endl;
@@ -688,7 +656,7 @@ SVC_Prefetch::SVC_Prefetch(BitBuffer& buf)
 std::string SVC_Prefetch::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  type: " << fetch_type << std::endl;
     ss << "  sound_index: " << sound_index << std::endl;
     return ss.str();
@@ -705,8 +673,8 @@ SVC_Menu::SVC_Menu(BitBuffer& buf)
 std::string SVC_Menu::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
-    ss << "  type: " << static_cast<int>(type) << std::endl;
+    ss << getName() << std::endl;
+    ss << "  type: " << static_cast<int>(dialog_type) << std::endl;
     ss << "  length: " << length << std::endl;
     ss << format_data(data) << std::endl;
     return ss.str();
@@ -738,7 +706,7 @@ SVC_GameEventList::SVC_GameEventList(BitBuffer& buf)
 std::string SVC_GameEventList::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  num_events: " << num_events << std::endl;
     for (const EventDescriptor& desc : descriptors) {
         ss << indent(desc.toString(), 2) << std::endl;
@@ -755,7 +723,7 @@ SVC_GetCvarValue::SVC_GetCvarValue(BitBuffer& buf)
 std::string SVC_GetCvarValue::toString() const
 {
     std::stringstream ss;
-    ss << name << std::endl;
+    ss << getName() << std::endl;
     ss << "  cookie: " << cookie << std::endl;
     ss << "  cvar_name: " << cvar_name << std::endl;
     return ss.str();

@@ -19,10 +19,10 @@ enum class MessageType
 class DemoMessage
 {
 public:
-    DemoMessage(const int32_t& p_tick);
+    explicit DemoMessage(const int32_t& p_tick);
     virtual ~DemoMessage() = default;
-    virtual std::string toString() const;
-    virtual std::string getName() const { return "Unknown DemoMessage"; };
+    virtual std::string toString() const = 0;
+    virtual std::string getName() const = 0;
     virtual MessageType getType() const = 0;
 
     int32_t tick;
