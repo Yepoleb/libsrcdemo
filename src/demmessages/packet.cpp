@@ -5,7 +5,7 @@
 
 #include "bitbuffer.hpp"
 #include "netmessage.hpp"
-#include "common.hpp"
+#include "config.hpp"
 #include "helpers.hpp"
 #include "packet.hpp"
 

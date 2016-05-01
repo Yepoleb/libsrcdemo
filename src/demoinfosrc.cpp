@@ -3,7 +3,7 @@
 
 #include "demofile.hpp"
 #include "eventparser.hpp"
-#include "paths.hpp"
+#include "config.hpp"
 
 int main(int argc, char **argv)
 {
@@ -17,10 +17,12 @@ int main(int argc, char **argv)
     }
 #endif
 
+#ifdef ENABLE_DEFAULT_DEMO
     DemoFile demo(DEMO_PATH);
 
     demo.printHeader();
     demo.printMessages();
+#endif
 
     delete g_evtparser;
     return 0;

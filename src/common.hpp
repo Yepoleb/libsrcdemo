@@ -5,10 +5,6 @@
 
 class BitBuffer;
 
-//#define DEBUG_PACKETS
-//#define DEBUG_TICKS
-//#define DEM_STRINGTABLES
-
 const int32_t DEMOPROTOCOL_VERSION = 3;
 const int32_t NETPROTOCOL_VERSION = 24;
 

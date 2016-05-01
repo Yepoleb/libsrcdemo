@@ -11,5 +11,5 @@ Release
 # Build directory
 build
 
-# User defined paths
-src/paths.hpp
+# User config
+src/config.hpp

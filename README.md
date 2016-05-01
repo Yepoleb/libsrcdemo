@@ -2,11 +2,6 @@
 
 Library for parsing the original source demo format. It's used by most games based on the Half-Life 2 engine. Dota 2 and CS:GO use a newer protobuf protocol and are unsupported, but have their own official demoinfo tools (demoinfo2, demoinfogo). Focus is on Team Fortress 2, because that's what I'm personally most interested in. Currently the library is in a very early development stage and should only be used for looking at it. In fact, it's not even a library but rather a bunch of source files and a main function.
 
-##Configuring
-
-1. Copy `src/paths.hpp.example` to `src/paths.hpp`
-2. Define `DEMO_PATH` to point to a demo file. You don't have to use defines, just make sure the path can be understood by the stdlib.
-
 ##Building
 
 Run the usual CMake commands:
@@ -15,7 +10,7 @@ Run the usual CMake commands:
     cd build
     cmake ..
     make
-    ./libsrcdemo
+    ./demoinfosrc
 
 ##Credits
 

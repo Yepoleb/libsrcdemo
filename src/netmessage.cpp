@@ -9,6 +9,7 @@
 #include "eventparser.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
+#include "config.hpp"
 #include "netmessage.hpp"
 
 const uint32_t LZSS_MAGIC = SwapU32(('L' << 24) | ('Z' << 16) | ('S' << 8) | ('S'));

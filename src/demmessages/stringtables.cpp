@@ -5,12 +5,13 @@
 #include "bitbuffer.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
+#include "config.hpp"
 #include "stringtables.hpp"
 
 StringTablesMsg::StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
-#ifdef DEM_STRINGTABLES
+#ifdef ENABLE_STRINGTABLESMSG
     BitBuffer buf(data, data_size * 8);
     uint8_t num_tables = buf.readU8();
     for (size_t i_table = 0; i_table < num_tables; i_table++) {
@@ -31,7 +32,7 @@ std::string StringTablesMsg::toString() const
 {
     std::stringstream ss;
     ss << tick << " " << getName() << std::endl;
-#ifdef DEM_STRINGTABLES
+#ifdef ENABLE_STRINGTABLESMSG
     for (StringTable* table : tables) {
         ss << indent(table->toString(), 2);
     }
