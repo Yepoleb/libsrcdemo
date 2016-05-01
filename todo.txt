@@ -8,7 +8,7 @@
 * Add parser state
   * Make evtparser local
   * Read demo version from header instead constant
-* BitBuffer length in bits
+* BitBuffer read to char*
 
 * Implement SVC_PacketEntities
 

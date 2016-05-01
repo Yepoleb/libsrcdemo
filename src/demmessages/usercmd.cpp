@@ -9,7 +9,7 @@
 UserCmdMsg::UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
-    BitBuffer buf(data, data_size);
+    BitBuffer buf(data, data_size * 8);
     fields = 0;
 
     if (buf.ReadBool()) {

@@ -12,7 +12,7 @@
 PacketMsg::PacketMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
-    BitBuffer buf(data, data_size);
+    BitBuffer buf(data, data_size * 8);
     while (buf.BitsLeft() > 6) {
         NetMsgType msg_type = static_cast<NetMsgType>(buf.ReadBits(6));
         NetMsg* p_msg;

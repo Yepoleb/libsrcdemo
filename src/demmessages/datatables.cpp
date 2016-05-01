@@ -21,7 +21,7 @@ const char* SENDPROPTYPE_NAMES[] =
 DataTablesMsg::DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
     DemoMessage(tick)
 {
-    BitBuffer buf(data, data_size);
+    BitBuffer buf(data, data_size * 8);
 
     size_t nflag_bits = PROPINFOBITS_FLAGS;
     if (DEMOPROTOCOL_VERSION == 2) {

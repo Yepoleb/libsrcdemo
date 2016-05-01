@@ -288,15 +288,15 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
 
     std::vector<char> data = buf.ReadData(length);
 
-    BitBuffer table_buf(data.data(), data.size());
+    BitBuffer data_buf(data.data(), length);
     std::vector<char> decompressed_data;
     if (is_compressed) {
-        size_t decompressed_size = table_buf.ReadU32();
-        size_t compressed_size = table_buf.ReadU32() - 4;
-        uint32_t magic = table_buf.ReadU32();
+        size_t decompressed_size = data_buf.ReadU32();
+        size_t compressed_size = data_buf.ReadU32() - 4;
+        uint32_t magic = data_buf.ReadU32();
         std::vector<char> compressed_data;
         decompressed_data.resize(decompressed_size);
-        compressed_data = table_buf.ReadData(compressed_size * 8);
+        compressed_data = data_buf.ReadData(compressed_size * 8);
         if (magic == LZSS_MAGIC) {
             std::cerr << "LZSS compression is not supported" << std::endl;
             throw std::exception();
@@ -306,39 +306,39 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
             std::cerr << "Unsupported compression " << magic << std::endl;
             throw std::exception();
         }
-        table_buf = BitBuffer(decompressed_data.data(), decompressed_size);
+        data_buf = BitBuffer(decompressed_data.data(), decompressed_size * 8);
     }
 
     std::vector<std::string> history;
     size_t entry_index = 0;
     for (int32_t i = 0; i < num_entries; i++) {
-        if (not table_buf.ReadBool()) {
-            entry_index = table_buf.ReadBits(encode_bits);
+        if (not data_buf.ReadBool()) {
+            entry_index = data_buf.ReadBits(encode_bits);
         }
 
         STableEntry entry;
         entry.index = entry_index;
-        if (table_buf.ReadBool()) {
-            bool has_basestring = table_buf.ReadBool();
+        if (data_buf.ReadBool()) {
+            bool has_basestring = data_buf.ReadBool();
             if (has_basestring) {
-                uint8_t substr_index = table_buf.ReadBits(5);
-                uint8_t substr_length = table_buf.ReadBits(SUBSTRING_BITS);
+                uint8_t substr_index = data_buf.ReadBits(5);
+                uint8_t substr_length = data_buf.ReadBits(SUBSTRING_BITS);
                 std::string basestring = history.at(substr_index);
                 std::string substring = basestring.substr(0, substr_length);
-                entry.name = substring + table_buf.ReadString();
+                entry.name = substring + data_buf.ReadString();
             } else {
-                entry.name = table_buf.ReadString();
+                entry.name = data_buf.ReadString();
             }
         }
 
-        if (table_buf.ReadBool()) {
+        if (data_buf.ReadBool()) {
             if (userdata_fixed_size) {
                 entry.length = userdata_size_bits;
-                entry.data = table_buf.ReadData(userdata_size_bits);
+                entry.data = data_buf.ReadData(userdata_size_bits);
             } else {
-                size_t userdata_size = table_buf.ReadBits(MAX_USERDATA_BITS) * 8;
+                size_t userdata_size = data_buf.ReadBits(MAX_USERDATA_BITS) * 8;
                 entry.length = userdata_size;
-                entry.data = table_buf.ReadData(userdata_size);
+                entry.data = data_buf.ReadData(userdata_size);
             }
         } else {
             entry.length = 0;
@@ -580,8 +580,8 @@ SVC_GameEvent::SVC_GameEvent(BitBuffer& buf)
 {
     length = buf.ReadBits(11);
     data = buf.ReadData(length);
-    BitBuffer evt_buf(data.data(), data.size());
-    event = g_evtparser->parseEvent(evt_buf);
+    BitBuffer data_buf(data.data(), length);
+    event = g_evtparser->parseEvent(data_buf);
 }
 
 std::string SVC_GameEvent::toString() const
@@ -683,19 +683,22 @@ std::string SVC_Menu::toString() const
 SVC_GameEventList::SVC_GameEventList(BitBuffer& buf)
 {
     num_events = buf.ReadBits(MAX_EVENT_BITS);
-    buf.Seek(20); // skip length
+    length = buf.ReadBits(20);
+    data = buf.ReadData(length);
+
+    BitBuffer data_buf(data.data(), length);
 
     for (size_t event_i = 0; event_i < num_events; event_i++) {
         EventDescriptor desc;
-        desc.id = buf.ReadBits(MAX_EVENT_BITS);
-        desc.name = buf.ReadString();
+        desc.id = data_buf.ReadBits(MAX_EVENT_BITS);
+        desc.name = data_buf.ReadString();
         while (true) {
             EventField field;
-            field.type = static_cast<FieldType>(buf.ReadBits(3));
+            field.type = static_cast<FieldType>(data_buf.ReadBits(3));
             if (field.type == FieldType::TYPE_LOCAL) {
                 break;
             }
-            field.name = buf.ReadString();
+            field.name = data_buf.ReadString();
             desc.fields.push_back(field);
         }
         descriptors.push_back(desc);

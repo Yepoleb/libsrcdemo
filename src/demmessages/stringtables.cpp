@@ -10,7 +10,7 @@ StringTablesMsg::StringTablesMsg(const int32_t& tick, const char* data, const si
     DemoMessage(tick)
 {
 #ifdef DEM_STRINGTABLES
-    BitBuffer buf(data, data_size);
+    BitBuffer buf(data, data_size * 8);
     uint8_t num_tables = buf.ReadU8();
     for (size_t i_table = 0; i_table < num_tables; i_table++) {
         StringTable* table = new StringTable(buf);

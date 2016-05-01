@@ -12,7 +12,7 @@ const uint8_t MTBL[] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 BitBuffer::BitBuffer(const char* data, size_t size)
 {
     m_buffer = data;
-    m_size = size * 8; // convert to bits
+    m_size = size;
     m_pos = 0;
 }
 

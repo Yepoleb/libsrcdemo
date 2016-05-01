@@ -508,6 +508,8 @@ public:
     virtual std::string getName() const { return "SVC_GameEventList"; };
     virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENTLIST; };
 
+    size_t length;
+    std::vector<char> data;
     uint16_t num_events;
     std::vector<EventDescriptor> descriptors;
 };
