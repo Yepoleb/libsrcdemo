@@ -14,9 +14,18 @@
 #include "demmessages/stringtables.hpp"
 #include "demofile.hpp"
 
-DemoFile::DemoFile(std::string filename)
+DemoFile::DemoFile(const std::string& filename)
+{
+    load(filename);
+}
+
+void DemoFile::load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
+    if (not file.is_open()) {
+        std::cerr << "Could not open demo file" << std::endl;
+        throw DemoException();
+    }
     m_header.demofilestamp = ReadString(file, 8);
 
     if (m_header.demofilestamp != "HL2DEMO") {
