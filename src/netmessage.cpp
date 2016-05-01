@@ -7,7 +7,6 @@
 
 #include "bitbuffer.hpp"
 #include "eventparser.hpp"
-#include "demmessages/stringtables.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
 #include "netmessage.hpp"

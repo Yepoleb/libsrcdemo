@@ -4,6 +4,7 @@
 
 #include "bitbuffer.hpp"
 #include "helpers.hpp"
+#include "common.hpp"
 #include "stringtables.hpp"
 
 StringTablesMsg::StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
