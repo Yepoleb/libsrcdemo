@@ -9,6 +9,7 @@ const int32_t DEMOPROTOCOL_VERSION = 3;
 const int32_t NETPROTOCOL_VERSION = 24;
 
 const size_t MAX_EDICT_BITS = 11;
+const size_t MAX_SOUND_INDEX_BITS = 14;
 
 struct QAngle
 {
@@ -18,6 +19,13 @@ struct QAngle
 };
 
 struct VecCoord
+{
+    float x;
+    float y;
+    float z;
+};
+
+struct Vector
 {
     float x;
     float y;

@@ -45,6 +45,17 @@ uint32_t BitBuffer::readBits(size_t bits)
     return ret;
 }
 
+int32_t BitBuffer::readSBits(size_t bits)
+{
+    uint32_t num = readBits(bits);
+    uint32_t sign = 1 << (bits - 1);
+    if (num >= sign) {
+        return num - sign - sign;
+    } else {
+        return num;
+    }
+}
+
 std::vector<char> BitBuffer::readData(size_t bits)
 {
     std::vector<char> bytes;

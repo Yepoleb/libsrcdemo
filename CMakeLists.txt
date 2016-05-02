@@ -16,6 +16,7 @@ set (CPP_SOURCE
     src/demmessages/synctick.cpp
     src/demmessages/stringtables.cpp
     src/demmessages/consolecmd.cpp
+    src/soundinfo.cpp
     src/netmessage.cpp
     src/bitbuffer.cpp
     src/vdfparser/vdfparser.cpp

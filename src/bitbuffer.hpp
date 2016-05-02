@@ -11,6 +11,7 @@ public:
     BitBuffer(const char* data, size_t size);
     void seek(size_t bits);
     uint32_t readBits(size_t bits);
+    int32_t readSBits(size_t bits);
     std::vector<char> readData(size_t bits);
     bool readBool();
     uint8_t readU8();

@@ -8,14 +8,12 @@
 
 class BitBuffer;
 class STableEntry;
+class SoundInfo;
 
 // SVC_CreateStringTable
 const size_t MAX_USERDATA_BITS = 14;
 const size_t SUBSTRING_BITS = 5;
 const size_t NET_MAX_PALYLOAD_BITS = 17;
-
-// SVC_Prefetch
-const size_t MAX_SOUND_INDEX_BITS = 14;
 
 // SVC_TempEntities
 const size_t EVENT_INDEX_BITS = 8;
@@ -87,8 +85,6 @@ inline uint32_t SwapU32(uint32_t num)
     swapped |= (num & 0x000000FF) << 24;
     return swapped;
 }
-
-
 
 class NetMsg
 {
@@ -341,6 +337,7 @@ public:
     uint8_t num_sounds;
     size_t length;
     std::vector<char> data;
+    std::vector<SoundInfo> sounds;
 };
 
 class SVC_SetView : public NetMsg

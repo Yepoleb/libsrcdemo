@@ -7,6 +7,7 @@
 
 #include "bitbuffer.hpp"
 #include "eventparser.hpp"
+#include "soundinfo.hpp"
 #include "helpers.hpp"
 #include "common.hpp"
 #include "config.hpp"
@@ -445,8 +446,16 @@ SVC_Sounds::SVC_Sounds(BitBuffer& buf)
     }
 
     data = buf.readData(length);
-    // public/soundinfo.h SoundInfo_t::ReadDelta
-    // engine/servermsghandler.cpp CClientState::ProcessSounds
+
+    BitBuffer data_buf(data.data(), length);
+    SoundInfo deltasound;
+
+    for (size_t sound_i = 0; sound_i < num_sounds; sound_i++) {
+        SoundInfo sound;
+        sound.readDelta(deltasound, data_buf);
+        deltasound = sound;
+        sounds.push_back(sound);
+    }
 }
 
 std::string SVC_Sounds::toString() const
@@ -456,8 +465,11 @@ std::string SVC_Sounds::toString() const
     ss << std::boolalpha;
     ss << "  reliable_sound: " << reliable_sound << std::endl;
     ss << "  num_sounds: " << (int)num_sounds << std::endl;
-    ss << "  length: " << length << std::endl;
-    ss << format_data(data) << std::endl;
+    ss << "  sounds:" << std::endl;
+    for (size_t sound_i = 0; sound_i < num_sounds; sound_i++) {
+        const SoundInfo& sound = sounds[sound_i];
+        ss << indent(sound.toString(), 4) << std::endl;
+    }
     return ss.str();
 }
 
