@@ -468,7 +468,8 @@ std::string SVC_Sounds::toString() const
     ss << "  sounds:" << std::endl;
     for (size_t sound_i = 0; sound_i < num_sounds; sound_i++) {
         const SoundInfo& sound = sounds[sound_i];
-        ss << indent(sound.toString(), 4) << std::endl;
+        ss << "    sound " << sound_i << std::endl;
+        ss << indent(sound.toString(), 6) << std::endl;
     }
     return ss.str();
 }
