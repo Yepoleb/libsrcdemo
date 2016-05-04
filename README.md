@@ -14,11 +14,13 @@ Run the usual CMake commands:
 
 ##Credits
 
-commonbullet - [vdfparser]
+* commonbullet - [vdfparser]
+* SizzlingCalamari - Reverse engineering some of the messages and helping me a lot with general stuff. Check out his own tool [demboyz]!
 
 ##License
 
 VDFParser is slightly modified version of the [vdfparser] AmxModx module. It's released under the GNU GPLv2. Therefore the project has to be released under the same license. My own code can be used under the GNU LGPLv2 as well, if you replace the VDFParser with an alternative or remove its features completely.
 
 [vdfparser]: https://code.google.com/archive/p/vdfparser/
+[demboyz]: https://github.com/SizzlingStats/demboyz
 
