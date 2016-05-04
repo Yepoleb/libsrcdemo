@@ -3,8 +3,6 @@ set (PROJECT_NAME "libsrcdemo")
 set (EXEC_NAME "demoinfosrc")
 project (${PROJECT_NAME})
 
-set (CMAKE_CXX_FLAGS "-std=c++11")
-
 set (CPP_SOURCES
     src/demoinfosrc.cpp
     src/eventparser.cpp
@@ -22,13 +20,19 @@ set (CPP_SOURCES
     src/bitbuffer.cpp
     src/vdfparser/vdfparser.cpp
     src/demofile.cpp)
-set (SNAPPY_SOURCES
-    external/snappy/snappy.cc
-    external/snappy/snappy-sinksource.cc
-    external/snappy/snappy-stubs-internal.cc)
 
 include_directories(src)
 include_directories(external/snappy)
 
+add_subdirectory(external/snappy)
+
 add_executable (${EXEC_NAME} ${CPP_SOURCES} ${SNAPPY_SOURCES})
+set_target_properties(${EXEC_NAME} PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_features (${EXEC_NAME} PUBLIC
+    cxx_defaulted_functions
+    cxx_explicit_conversions
+    cxx_nullptr
+    cxx_range_for
+    cxx_strong_enums)
+target_link_libraries(${EXEC_NAME} snappy)
 
