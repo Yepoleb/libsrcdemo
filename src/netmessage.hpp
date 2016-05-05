@@ -8,7 +8,7 @@
 
 class BitBuffer;
 class STableEntry;
-class SoundInfo;
+struct SoundInfo;
 
 // SVC_CreateStringTable
 const size_t MAX_USERDATA_BITS = 14;
@@ -76,10 +76,10 @@ enum class DialogType
 
 typedef std::pair<std::string,std::string> strpair;
 
-inline uint32_t SwapU32(uint32_t num)
+constexpr uint32_t SwapU32(uint32_t num)
 {
-    uint32_t swapped;
-    swapped  = (num & 0xFF000000) >> 24;
+    uint32_t swapped = 0;
+    swapped |= (num & 0xFF000000) >> 24;
     swapped |= (num & 0x00FF0000) >>  8;
     swapped |= (num & 0x0000FF00) <<  8;
     swapped |= (num & 0x000000FF) << 24;
@@ -101,8 +101,8 @@ public:
     explicit NET_Nop(BitBuffer& buf);
     virtual ~NET_Nop() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_Nop"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_NOP; };
+    virtual std::string getName() const { return "NET_Nop"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_NOP; }
 };
 
 class NET_Disconnect : public NetMsg
@@ -111,8 +111,8 @@ public:
     explicit NET_Disconnect(BitBuffer& buf);
     virtual ~NET_Disconnect() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_Disconnect"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_DISCONNECT; };
+    virtual std::string getName() const { return "NET_Disconnect"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_DISCONNECT; }
 
     std::string reason;
 };
@@ -123,8 +123,8 @@ public:
     explicit NET_File(BitBuffer& buf);
     virtual ~NET_File() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_File"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_FILE; };
+    virtual std::string getName() const { return "NET_File"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_FILE; }
 
     uint32_t transfer_id;
     std::string filename;
@@ -137,8 +137,8 @@ public:
     explicit NET_Tick(BitBuffer& buf);
     virtual ~NET_Tick() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_Tick"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_TICK; };
+    virtual std::string getName() const { return "NET_Tick"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_TICK; }
 
     int32_t tick;
     uint16_t host_frametime;
@@ -151,8 +151,8 @@ public:
     explicit NET_StringCmd(BitBuffer& buf);
     virtual ~NET_StringCmd() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_StringCmd"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_STRINGCMD; };
+    virtual std::string getName() const { return "NET_StringCmd"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_STRINGCMD; }
 
     std::string command;
 };
@@ -163,8 +163,8 @@ public:
     explicit NET_SetConVar(BitBuffer& buf);
     virtual ~NET_SetConVar() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_SetConVar"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_SETCONVAR; };
+    virtual std::string getName() const { return "NET_SetConVar"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_SETCONVAR; }
 
     std::vector<strpair> vars;
 };
@@ -175,8 +175,8 @@ public:
     explicit NET_SignonState(BitBuffer& buf);
     virtual ~NET_SignonState() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "NET_SignonState"; };
-    virtual NetMsgType getType() const { return NetMsgType::NET_SIGNONSTATE; };
+    virtual std::string getName() const { return "NET_SignonState"; }
+    virtual NetMsgType getType() const { return NetMsgType::NET_SIGNONSTATE; }
 
     uint8_t signon_state;
     int32_t spawn_count;
@@ -188,8 +188,8 @@ public:
     explicit SVC_Print(BitBuffer& buf);
     virtual ~SVC_Print() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_Print"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_PRINT; };
+    virtual std::string getName() const { return "SVC_Print"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_PRINT; }
 
     std::string text;
 };
@@ -200,8 +200,8 @@ public:
     explicit SVC_ServerInfo(BitBuffer& buf);
     virtual ~SVC_ServerInfo() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_ServerInfo"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_SERVERINFO; };
+    virtual std::string getName() const { return "SVC_ServerInfo"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_SERVERINFO; }
 
     int16_t protocol;
     int32_t server_count;
@@ -228,8 +228,8 @@ public:
     explicit SVC_SendTable(BitBuffer& buf);
     virtual ~SVC_SendTable() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_SendTable"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_SENDTABLE; };
+    virtual std::string getName() const { return "SVC_SendTable"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_SENDTABLE; }
 
     bool needs_decoder;
     size_t length;
@@ -242,8 +242,8 @@ public:
     explicit SVC_ClassInfo(BitBuffer& buf);
     virtual ~SVC_ClassInfo() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_ClassInfo"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_CLASSINFO; };
+    virtual std::string getName() const { return "SVC_ClassInfo"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_CLASSINFO; }
 
     size_t num_classes;
     bool create_on_client;
@@ -256,8 +256,8 @@ public:
     explicit SVC_SetPause(BitBuffer& buf);
     virtual ~SVC_SetPause() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_SetPause"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_SETPAUSE; };
+    virtual std::string getName() const { return "SVC_SetPause"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_SETPAUSE; }
 
     bool pause;
 };
@@ -268,8 +268,8 @@ public:
     explicit SVC_CreateStringTable(BitBuffer& buf);
     virtual ~SVC_CreateStringTable() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_CreateStringTable"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_CREATESTRINGTABLE; };
+    virtual std::string getName() const { return "SVC_CreateStringTable"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_CREATESTRINGTABLE; }
 
     std::string tablename;
     uint16_t max_entries;
@@ -287,8 +287,8 @@ public:
     explicit SVC_UpdateStringTable(BitBuffer& buf);
     virtual ~SVC_UpdateStringTable() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_UpdateStringTable"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_UPDATESTRINGTABLE; };
+    virtual std::string getName() const { return "SVC_UpdateStringTable"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_UPDATESTRINGTABLE; }
 
     int32_t table_id;
     uint16_t changed_entries;
@@ -302,8 +302,8 @@ public:
     explicit SVC_VoiceInit(BitBuffer& buf);
     virtual ~SVC_VoiceInit() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_VoiceInit"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEINIT; };
+    virtual std::string getName() const { return "SVC_VoiceInit"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEINIT; }
 
     std::string codec_name;
     uint8_t quality;
@@ -315,8 +315,8 @@ public:
     explicit SVC_VoiceData(BitBuffer& buf);
     virtual ~SVC_VoiceData() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_VoiceData"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEDATA; };
+    virtual std::string getName() const { return "SVC_VoiceData"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEDATA; }
 
     uint8_t from_client;
     bool proximity;
@@ -330,8 +330,8 @@ public:
     explicit SVC_Sounds(BitBuffer& buf);
     virtual ~SVC_Sounds() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_Sounds"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_SOUNDS; };
+    virtual std::string getName() const { return "SVC_Sounds"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_SOUNDS; }
 
     bool reliable_sound;
     uint8_t num_sounds;
@@ -346,8 +346,8 @@ public:
     explicit SVC_SetView(BitBuffer& buf);
     virtual ~SVC_SetView() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_SetView"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_SETVIEW; };
+    virtual std::string getName() const { return "SVC_SetView"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_SETVIEW; }
 
     uint16_t entity_index;
 };
@@ -358,8 +358,8 @@ public:
     explicit SVC_FixAngle(BitBuffer& buf);
     virtual ~SVC_FixAngle() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_FixAngle"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_FIXANGLE; };
+    virtual std::string getName() const { return "SVC_FixAngle"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_FIXANGLE; }
 
     bool relative;
     QAngle angle;
@@ -371,8 +371,8 @@ public:
     explicit SVC_CrosshairAngle(BitBuffer& buf);
     virtual ~SVC_CrosshairAngle() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_CrosshairAngle"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_CROSSHAIRANGLE; };
+    virtual std::string getName() const { return "SVC_CrosshairAngle"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_CROSSHAIRANGLE; }
 
     QAngle angle;
 };
@@ -383,8 +383,8 @@ public:
     explicit SVC_BSPDecal(BitBuffer& buf);
     virtual ~SVC_BSPDecal() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_BSPDecal"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_BSPDECAL; };
+    virtual std::string getName() const { return "SVC_BSPDecal"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_BSPDECAL; }
 
     VecCoord pos;
     uint16_t decal_texture_index;
@@ -399,8 +399,8 @@ public:
     explicit SVC_UserMessage(BitBuffer& buf);
     virtual ~SVC_UserMessage() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_UserMessage"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_USERMESSAGE; };
+    virtual std::string getName() const { return "SVC_UserMessage"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_USERMESSAGE; }
 
     uint8_t msg_type;
     size_t length;
@@ -413,8 +413,8 @@ public:
     explicit SVC_EntityMessage(BitBuffer& buf);
     virtual ~SVC_EntityMessage() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_EntityMessage"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_ENTITYMESSAGE; };
+    virtual std::string getName() const { return "SVC_EntityMessage"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_ENTITYMESSAGE; }
 
     uint16_t entity_index;
     uint16_t class_id;
@@ -428,8 +428,8 @@ public:
     explicit SVC_GameEvent(BitBuffer& buf);
     virtual ~SVC_GameEvent() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_GameEvent"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENT; };
+    virtual std::string getName() const { return "SVC_GameEvent"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENT; }
 
     Event event;
     size_t length;
@@ -442,8 +442,8 @@ public:
     explicit SVC_PacketEntities(BitBuffer& buf);
     virtual ~SVC_PacketEntities() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_PacketEntities"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_PACKETENTITIES; };
+    virtual std::string getName() const { return "SVC_PacketEntities"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_PACKETENTITIES; }
 
     size_t max_entries;
     size_t updated_entries;
@@ -461,8 +461,8 @@ public:
     explicit SVC_TempEntities(BitBuffer& buf);
     virtual ~SVC_TempEntities() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_TempEntities"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_TEMPENTITIES; };
+    virtual std::string getName() const { return "SVC_TempEntities"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_TEMPENTITIES; }
 
     uint8_t num_entries;
     size_t length;
@@ -475,8 +475,8 @@ public:
     explicit SVC_Prefetch(BitBuffer& buf);
     virtual ~SVC_Prefetch() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_Prefetch"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_PREFETCH; };
+    virtual std::string getName() const { return "SVC_Prefetch"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_PREFETCH; }
 
     uint16_t fetch_type;
     uint16_t sound_index;
@@ -488,8 +488,8 @@ public:
     explicit SVC_Menu(BitBuffer& buf);
     virtual ~SVC_Menu() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_Menu"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_MENU; };
+    virtual std::string getName() const { return "SVC_Menu"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_MENU; }
 
     DialogType dialog_type;
     size_t length;
@@ -502,8 +502,8 @@ public:
     explicit SVC_GameEventList(BitBuffer& buf);
     virtual ~SVC_GameEventList() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_GameEventList"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENTLIST; };
+    virtual std::string getName() const { return "SVC_GameEventList"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENTLIST; }
 
     size_t length;
     std::vector<char> data;
@@ -517,8 +517,8 @@ public:
     explicit SVC_GetCvarValue(BitBuffer& buf);
     virtual ~SVC_GetCvarValue() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "SVC_GetCvarValue"; };
-    virtual NetMsgType getType() const { return NetMsgType::SVC_GETCVARVALUE; };
+    virtual std::string getName() const { return "SVC_GetCvarValue"; }
+    virtual NetMsgType getType() const { return NetMsgType::SVC_GETCVARVALUE; }
 
     int32_t cookie;
     std::string cvar_name;

@@ -23,7 +23,7 @@ struct DemoHeader
 
 class DemoException : public std::exception
 {
-    virtual const char* what() const throw()
+    virtual const char* what() const noexcept
     {
         return "Failed to parse demo.";
     }
@@ -32,12 +32,12 @@ class DemoException : public std::exception
 class DemoFile
 {
 public:
-    DemoFile() { };
+    DemoFile() { }
     explicit DemoFile(const std::string& filename);
     ~DemoFile();
     void load(const std::string& filename);
-    DemoHeader getHeader() const { return m_header; };
-    std::vector<DemoMessage*> getMessages() const { return m_messages; };
+    DemoHeader getHeader() const { return m_header; }
+    std::vector<DemoMessage*> getMessages() const { return m_messages; }
     void printHeader();
     void printMessages();
 private:

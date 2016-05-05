@@ -13,4 +13,3 @@
 //#define DEBUG_TICKS
 
 #define DEMO_PATH "/home/user/.steam/steamapps/common/Team Fortress 2/tf/send_to_higps.dem"
-

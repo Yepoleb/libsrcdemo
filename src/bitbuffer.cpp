@@ -30,8 +30,8 @@ uint32_t BitBuffer::readBits(size_t bits)
     while (left > 0)
     {
         assert(m_pos < m_size);
-        size_t idx = m_pos >> 3; // m_pos / 8
-        uint8_t bit = m_pos & 0b111; // m_pos % 8
+        size_t idx = m_pos / 8;
+        uint8_t bit = m_pos % 8;
         size_t toget = std::min((size_t)(8 - bit), left);
 
         uint8_t byte = static_cast<uint8_t>(m_buffer[idx]);

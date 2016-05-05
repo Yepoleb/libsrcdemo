@@ -19,7 +19,7 @@ void ToLowerCase(char *src, char *dest);
 enum
 {
 	VDF_MOVEPOS_AFTER = 0,
-	VDF_MOVEPOS_BEFORE,
+	VDF_MOVEPOS_BEFORE
 };
 
 enum

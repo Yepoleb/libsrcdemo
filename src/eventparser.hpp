@@ -65,7 +65,7 @@ struct Event
 class EventParser
 {
 public:
-    EventParser() { };
+    EventParser() { }
     void loadFile(const char* path);
     void loadFile(const std::string& path);
     bool addDescriptor(EventDescriptor desc);

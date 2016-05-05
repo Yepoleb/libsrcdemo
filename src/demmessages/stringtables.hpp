@@ -15,8 +15,8 @@ public:
     StringTablesMsg(const int32_t& tick, const char* data, const size_t& data_size);
     virtual ~StringTablesMsg();
     virtual std::string toString() const;
-    virtual std::string getName() const { return "StringTablesMsg"; };
-    virtual MessageType getType() const { return MessageType::STRINGTABLES; };
+    virtual std::string getName() const { return "StringTablesMsg"; }
+    virtual MessageType getType() const { return MessageType::STRINGTABLES; }
 
     std::vector<StringTable*> tables;
 };

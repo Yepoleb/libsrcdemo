@@ -27,8 +27,8 @@ public:
     UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size);
     virtual ~UserCmdMsg() = default;
     virtual std::string toString() const;
-    virtual std::string getName() const { return "UserCmdMsg"; };
-    virtual MessageType getType() const { return MessageType::USERCMD; };
+    virtual std::string getName() const { return "UserCmdMsg"; }
+    virtual MessageType getType() const { return MessageType::USERCMD; }
 
     uint32_t fields;
     uint32_t command_number;

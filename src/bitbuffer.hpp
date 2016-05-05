@@ -27,7 +27,7 @@ public:
     VecCoord readVecCoord();
     float ReadBitAngle(size_t bits);
     size_t bitsLeft();
-    size_t getPos() const {return m_pos;};
+    size_t getPos() const { return m_pos; }
 
 private:
     const char* m_buffer;

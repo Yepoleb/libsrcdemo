@@ -5,8 +5,8 @@
 
 #include "demmessage.hpp"
 
-class DataTable;
-class SendProp;
+struct DataTable;
+struct SendProp;
 
 // SendProp
 const uint16_t SPROP_UNSIGNED = (1 << 0);
@@ -52,8 +52,8 @@ public:
     DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size);
     virtual ~DataTablesMsg();
     virtual std::string toString() const;
-    virtual std::string getName() const { return "DataTablesMsg"; };
-    virtual MessageType getType() const { return MessageType::DATATABLES; };
+    virtual std::string getName() const { return "DataTablesMsg"; }
+    virtual MessageType getType() const { return MessageType::DATATABLES; }
 
     std::vector<DataTable*> tables;
     std::vector<ClassInfo> classes;
