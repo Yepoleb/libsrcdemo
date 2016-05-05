@@ -32,7 +32,8 @@ target_compile_features (${EXEC_NAME} PUBLIC
     cxx_explicit_conversions
     cxx_nullptr
     cxx_range_for
-    cxx_strong_enums)
+    cxx_strong_enums
+    cxx_binary_literals)
 
 if (MSVC)
     # Disable extensions to allow the alternative operator representations
