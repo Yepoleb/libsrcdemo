@@ -8,6 +8,8 @@
 struct DataTable;
 struct SendProp;
 
+extern const char* SENDPROPTYPE_NAMES[];
+
 // SendProp
 const uint16_t SPROP_UNSIGNED = (1 << 0);
 const uint16_t SPROP_COORD = (1 << 1);

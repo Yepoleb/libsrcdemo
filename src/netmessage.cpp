@@ -337,9 +337,9 @@ SVC_CreateStringTable::SVC_CreateStringTable(BitBuffer& buf)
                 entry.length = userdata_size_bits;
                 entry.data = data_buf.readData(userdata_size_bits);
             } else {
-                size_t userdata_size = data_buf.readBits(MAX_USERDATA_BITS) * 8;
-                entry.length = userdata_size;
-                entry.data = data_buf.readData(userdata_size);
+                size_t entrydata_size = data_buf.readBits(MAX_USERDATA_BITS) * 8;
+                entry.length = entrydata_size;
+                entry.data = data_buf.readData(entrydata_size);
             }
         } else {
             entry.length = 0;

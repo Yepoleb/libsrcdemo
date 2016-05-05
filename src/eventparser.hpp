@@ -6,6 +6,7 @@ class EventParser;
 class BitBuffer;
 
 extern EventParser* g_evtparser;
+extern const char* EVENT_FIELD_TYPE_MAP[];
 
 const size_t MAX_EVENT_BITS = 9;
 const size_t NUM_FIELD_TYPES = 7;

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <climits>
 
 #include "eventparser.hpp"
 #include "bitbuffer.hpp"
@@ -107,7 +108,7 @@ void EventParser::loadFile(const char* path)
 
         EventDescriptor descriptor;
         descriptor.name = event_name;
-        descriptor.id = -1;
+        descriptor.id = USHRT_MAX;
 
         VDFNode* field_node = event_node->childNode;
         while (field_node != nullptr) {
@@ -140,7 +141,7 @@ bool EventParser::addDescriptor(EventDescriptor desc)
         descriptors.push_back(desc);
         return false;
     } else {
-        if (desc.id != -1) {
+        if (desc.id != USHRT_MAX) {
             desc.id = old_desc->id;
         }
         *old_desc = desc;

@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <cassert>
 
 #include "demmessages/demmessage.hpp"
 #include "demmessages/signon.hpp"
