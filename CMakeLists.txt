@@ -3,20 +3,6 @@ set (PROJECT_NAME "libsrcdemo")
 set (EXEC_NAME "demoinfosrc")
 project (${PROJECT_NAME})
 
-set_target_properties (${EXEC_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_features (${EXEC_NAME} PUBLIC
-    cxx_defaulted_functions
-    cxx_explicit_conversions
-    cxx_nullptr
-    cxx_range_for
-    cxx_strong_enums)
-
-if (MSVC)
-    # Disable extensions to allow the alternative operator representations
-    # Enable exception handling
-    set (CMAKE_CXX_FLAGS "/Za /EHsc")
-endif (MSVC)
-
 include_directories (src)
 include_directories (external/snappy)
 
@@ -40,7 +26,20 @@ set (CPP_SOURCES
 
 add_executable (${EXEC_NAME} ${CPP_SOURCES})
 
+set_target_properties (${EXEC_NAME} PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_features (${EXEC_NAME} PUBLIC
+    cxx_defaulted_functions
+    cxx_explicit_conversions
+    cxx_nullptr
+    cxx_range_for
+    cxx_strong_enums)
+
+if (MSVC)
+    # Disable extensions to allow the alternative operator representations
+    # Enable exception handling
+    set (CMAKE_CXX_FLAGS "/Za /EHsc")
+endif (MSVC)
+
 add_subdirectory (external/snappy)
 target_link_libraries (${EXEC_NAME} snappy)
-
 
