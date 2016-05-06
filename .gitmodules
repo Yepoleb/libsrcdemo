@@ -1,3 +1,6 @@
 [submodule "external/snappy"]
 	path = external/snappy
 	url = https://github.com/Yepoleb/snappy-cmake.git
+[submodule "external/vdfparser"]
+	path = external/vdfparser
+	url = https://github.com/Yepoleb/vdfparser.git

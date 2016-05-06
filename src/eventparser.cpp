@@ -8,7 +8,7 @@
 
 #include "eventparser.hpp"
 #include "bitbuffer.hpp"
-#include "vdfparser/vdfparser.hpp"
+#include "vdfparser.hpp"
 
 EventParser* g_evtparser;
 

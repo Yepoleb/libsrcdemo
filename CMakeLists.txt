@@ -5,6 +5,7 @@ project (${PROJECT_NAME})
 
 include_directories (src)
 include_directories (external/snappy)
+include_directories (external/vdfparser/include)
 
 set (CPP_SOURCES
     src/demoinfosrc.cpp
@@ -21,7 +22,6 @@ set (CPP_SOURCES
     src/soundinfo.cpp
     src/netmessage.cpp
     src/bitbuffer.cpp
-    src/vdfparser/vdfparser.cpp
     src/demofile.cpp)
 
 add_executable (${EXEC_NAME} ${CPP_SOURCES})
@@ -42,5 +42,7 @@ if (MSVC)
 endif (MSVC)
 
 add_subdirectory (external/snappy)
+add_subdirectory (external/vdfparser)
 target_link_libraries (${EXEC_NAME} snappy)
+target_link_libraries (${EXEC_NAME} vdfparser)
 
