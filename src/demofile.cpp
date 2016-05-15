@@ -52,6 +52,7 @@ void DemoFile::load(const std::string& filename)
 
     m_header.signonlength = ReadInt32(file);
 
+    ParserState* parser_st = new ParserState;
     while (true)
     {
         DemoMessage* msg;
@@ -91,25 +92,25 @@ void DemoFile::load(const std::string& filename)
         switch (type)
         {
             case MessageType::SIGNON:
-                msg = static_cast<DemoMessage*>(new SignonMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new SignonMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::PACKET:
-                msg = static_cast<DemoMessage*>(new PacketMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new PacketMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::CONSOLECMD:
-                msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new ConsoleCmdMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::USERCMD:
-                msg = static_cast<DemoMessage*>(new UserCmdMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new UserCmdMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::DATATABLES:
-                msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new DataTablesMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::STRINGTABLES:
-                msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new StringTablesMsg(tick, data, data_size, parser_st));
                 break;
             case MessageType::SYNCTICK:
-                msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size));
+                msg = static_cast<DemoMessage*>(new SyncTickMsg(tick, data, data_size, parser_st));
                 break;
             default:
                 std::cerr << "Unknown demo message type encountered." << std::endl;
@@ -120,7 +121,6 @@ void DemoFile::load(const std::string& filename)
             delete[] data;
         }
         if (msg != nullptr) {
-            //std::cout << msg->toString();
             m_messages.push_back(msg);
         }
     }

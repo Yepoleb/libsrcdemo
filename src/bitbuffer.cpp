@@ -4,6 +4,7 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 #include "bitbuffer.hpp"
 
@@ -29,7 +30,9 @@ uint32_t BitBuffer::readBits(size_t bits)
 
     while (left > 0)
     {
-        assert(m_pos < m_size);
+        if (m_pos >= m_size) {
+            throw std::out_of_range("BitBuffer::readBits");
+        }
         size_t idx = m_pos / 8;
         uint8_t bit = m_pos % 8;
         size_t toget = std::min((size_t)(8 - bit), left);

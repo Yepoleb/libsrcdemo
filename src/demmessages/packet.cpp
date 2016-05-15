@@ -7,10 +7,16 @@
 #include "netmessage.hpp"
 #include "config.hpp"
 #include "helpers.hpp"
+#include "common.hpp"
 #include "packet.hpp"
 
-PacketMsg::PacketMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+PacketMsg::PacketMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st) :
     DemoMessage(tick)
+{
+    readBuffer(data, data_size, parser_st);
+}
+
+void PacketMsg::readBuffer(const char* data, const size_t data_size, ParserState* parser_st)
 {
     BitBuffer buf(data, data_size * 8);
     while (buf.bitsLeft() > 6) {
@@ -18,94 +24,94 @@ PacketMsg::PacketMsg(const int32_t& tick, const char* data, const size_t& data_s
         NetMsg* p_msg;
         switch (msg_type) {
             case NetMsgType::NET_NOP:
-                p_msg = new NET_Nop(buf);
+                p_msg = new NET_Nop(buf, parser_st);
                 break;
             case NetMsgType::NET_DISCONNECT:
-                p_msg = new NET_Disconnect(buf);
+                p_msg = new NET_Disconnect(buf, parser_st);
                 break;
             case NetMsgType::NET_FILE:
-                p_msg = new NET_File(buf);
+                p_msg = new NET_File(buf, parser_st);
                 break;
             case NetMsgType::NET_TICK:
-                p_msg = new NET_Tick(buf);
+                p_msg = new NET_Tick(buf, parser_st);
                 break;
             case NetMsgType::NET_STRINGCMD:
-                p_msg = new NET_StringCmd(buf);
+                p_msg = new NET_StringCmd(buf, parser_st);
                 break;
             case NetMsgType::NET_SETCONVAR:
-                p_msg = new NET_SetConVar(buf);
+                p_msg = new NET_SetConVar(buf, parser_st);
                 break;
             case NetMsgType::NET_SIGNONSTATE:
-                p_msg = new NET_SignonState(buf);
+                p_msg = new NET_SignonState(buf, parser_st);
                 break;
             case NetMsgType::SVC_PRINT:
-                p_msg = new SVC_Print(buf);
+                p_msg = new SVC_Print(buf, parser_st);
                 break;
             case NetMsgType::SVC_SERVERINFO:
-                p_msg = new SVC_ServerInfo(buf);
+                p_msg = new SVC_ServerInfo(buf, parser_st);
                 break;
             case NetMsgType::SVC_SENDTABLE:
-                p_msg = new SVC_SendTable(buf);
+                p_msg = new SVC_SendTable(buf, parser_st);
                 break;
             case NetMsgType::SVC_CLASSINFO:
-                p_msg = new SVC_ClassInfo(buf);
+                p_msg = new SVC_ClassInfo(buf, parser_st);
                 break;
             case NetMsgType::SVC_SETPAUSE:
-                p_msg = new SVC_SetPause(buf);
+                p_msg = new SVC_SetPause(buf, parser_st);
                 break;
             case NetMsgType::SVC_CREATESTRINGTABLE:
-                p_msg = new SVC_CreateStringTable(buf);
+                p_msg = new SVC_CreateStringTable(buf, parser_st);
                 break;
             case NetMsgType::SVC_UPDATESTRINGTABLE:
-                p_msg = new SVC_UpdateStringTable(buf);
+                p_msg = new SVC_UpdateStringTable(buf, parser_st);
                 break;
             case NetMsgType::SVC_VOICEINIT:
-                p_msg = new SVC_VoiceInit(buf);
+                p_msg = new SVC_VoiceInit(buf, parser_st);
                 break;
             case NetMsgType::SVC_VOICEDATA:
-                p_msg = new SVC_VoiceData(buf);
+                p_msg = new SVC_VoiceData(buf, parser_st);
                 break;
             case NetMsgType::SVC_SOUNDS:
-                p_msg = new SVC_Sounds(buf);
+                p_msg = new SVC_Sounds(buf, parser_st);
                 break;
             case NetMsgType::SVC_SETVIEW:
-                p_msg = new SVC_SetView(buf);
+                p_msg = new SVC_SetView(buf, parser_st);
                 break;
             case NetMsgType::SVC_FIXANGLE:
-                p_msg = new SVC_FixAngle(buf);
+                p_msg = new SVC_FixAngle(buf, parser_st);
                 break;
             case NetMsgType::SVC_CROSSHAIRANGLE:
-                p_msg = new SVC_CrosshairAngle(buf);
+                p_msg = new SVC_CrosshairAngle(buf, parser_st);
                 break;
             case NetMsgType::SVC_BSPDECAL:
-                p_msg = new SVC_BSPDecal(buf);
+                p_msg = new SVC_BSPDecal(buf, parser_st);
                 break;
             case NetMsgType::SVC_USERMESSAGE:
-                p_msg = new SVC_UserMessage(buf);
+                p_msg = new SVC_UserMessage(buf, parser_st);
                 break;
             case NetMsgType::SVC_ENTITYMESSAGE:
-                p_msg = new SVC_EntityMessage(buf);
+                p_msg = new SVC_EntityMessage(buf, parser_st);
                 break;
             case NetMsgType::SVC_GAMEEVENT:
-                p_msg = new SVC_GameEvent(buf);
+                p_msg = new SVC_GameEvent(buf, parser_st);
                 break;
             case NetMsgType::SVC_PACKETENTITIES:
-                p_msg = new SVC_PacketEntities(buf);
+                p_msg = new SVC_PacketEntities(buf, parser_st);
                 break;
             case NetMsgType::SVC_TEMPENTITIES:
-                p_msg = new SVC_TempEntities(buf);
+                p_msg = new SVC_TempEntities(buf, parser_st);
                 break;
             case NetMsgType::SVC_PREFETCH:
-                p_msg = new SVC_Prefetch(buf);
+                p_msg = new SVC_Prefetch(buf, parser_st);
                 break;
             case NetMsgType::SVC_MENU:
-                p_msg = new SVC_Menu(buf);
+                p_msg = new SVC_Menu(buf, parser_st);
                 break;
             case NetMsgType::SVC_GAMEEVENTLIST:
-                p_msg = new SVC_GameEventList(buf);
+                p_msg = new SVC_GameEventList(buf, parser_st);
                 break;
             case NetMsgType::SVC_GETCVARVALUE:
-                p_msg = new SVC_GetCvarValue(buf);
+                p_msg = new SVC_GetCvarValue(buf, parser_st);
                 break;
             default:
                 std::cerr << "Unsupported message " << (int)msg_type << std::endl;

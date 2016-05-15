@@ -4,6 +4,7 @@
 
 #include "bitbuffer.hpp"
 #include "helpers.hpp"
+#include "common.hpp"
 #include "datatables.hpp"
 
 const char* SENDPROPTYPE_NAMES[] =
@@ -18,8 +19,13 @@ const char* SENDPROPTYPE_NAMES[] =
     "Int64"
 };
 
-DataTablesMsg::DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+DataTablesMsg::DataTablesMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st) :
     DemoMessage(tick)
+{
+    readBuffer(data, data_size, parser_st);
+}
+
+void DataTablesMsg::readBuffer(const char* data, const size_t data_size, ParserState* parser_st)
 {
     BitBuffer buf(data, data_size * 8);
 

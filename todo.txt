@@ -2,13 +2,13 @@
 * Fix VDF parser interpreting {} as name
 * Read vpk files
 * Proper exceptions
-* Default constructors for dem- and netmessages
 * Decide between classes / structs for netmessages
 * Split into lib and tool
 * Add parser state
   * Make evtparser local
   * Read demo version from header instead constant
 * BitBuffer read to char*
+* Interpret string tables (classinfo)
 
 * Implement SVC_PacketEntities
 

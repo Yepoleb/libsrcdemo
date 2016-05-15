@@ -2,10 +2,16 @@
 #include <string>
 #include <sstream>
 
+#include "common.hpp"
 #include "synctick.hpp"
 
-SyncTickMsg::SyncTickMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+SyncTickMsg::SyncTickMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st) :
     DemoMessage(tick)
+{
+    readBuffer(data, data_size, parser_st);
+}
+
+void SyncTickMsg::readBuffer(const char* data, const size_t data_size, ParserState* parser_st)
 {
 
 }

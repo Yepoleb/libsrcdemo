@@ -4,15 +4,15 @@
 #include <vector>
 #include <utility>
 
+#include "common.hpp"
+#include "soundinfo.hpp"
 #include "eventparser.hpp"
+#include "stringtable.hpp"
 
 class BitBuffer;
-class STableEntry;
-struct SoundInfo;
+class ParserState;
 
 // SVC_CreateStringTable
-const size_t MAX_USERDATA_BITS = 14;
-const size_t SUBSTRING_BITS = 5;
 const size_t NET_MAX_PALYLOAD_BITS = 17;
 
 // SVC_TempEntities
@@ -90,6 +90,7 @@ class NetMsg
 {
 public:
     virtual ~NetMsg() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st) = 0;
     virtual std::string toString() const = 0;
     virtual std::string getName() const = 0;
     virtual NetMsgType getType() const = 0;
@@ -98,8 +99,10 @@ public:
 class NET_Nop : public NetMsg
 {
 public:
-    explicit NET_Nop(BitBuffer& buf);
+    NET_Nop() : NetMsg() { }
+    explicit NET_Nop(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_Nop() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_Nop"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_NOP; }
@@ -108,8 +111,10 @@ public:
 class NET_Disconnect : public NetMsg
 {
 public:
-    explicit NET_Disconnect(BitBuffer& buf);
+    NET_Disconnect() : NetMsg() { }
+    explicit NET_Disconnect(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_Disconnect() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_Disconnect"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_DISCONNECT; }
@@ -120,8 +125,10 @@ public:
 class NET_File : public NetMsg
 {
 public:
-    explicit NET_File(BitBuffer& buf);
+    NET_File() : NetMsg() { }
+    explicit NET_File(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_File() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_File"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_FILE; }
@@ -134,8 +141,10 @@ public:
 class NET_Tick : public NetMsg
 {
 public:
-    explicit NET_Tick(BitBuffer& buf);
+    NET_Tick() : NetMsg() { }
+    explicit NET_Tick(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_Tick() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_Tick"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_TICK; }
@@ -148,8 +157,10 @@ public:
 class NET_StringCmd : public NetMsg
 {
 public:
-    explicit NET_StringCmd(BitBuffer& buf);
+    NET_StringCmd() : NetMsg() { }
+    explicit NET_StringCmd(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_StringCmd() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_StringCmd"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_STRINGCMD; }
@@ -160,8 +171,10 @@ public:
 class NET_SetConVar : public NetMsg
 {
 public:
-    explicit NET_SetConVar(BitBuffer& buf);
+    NET_SetConVar() : NetMsg() { }
+    explicit NET_SetConVar(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_SetConVar() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_SetConVar"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_SETCONVAR; }
@@ -172,8 +185,10 @@ public:
 class NET_SignonState : public NetMsg
 {
 public:
-    explicit NET_SignonState(BitBuffer& buf);
+    NET_SignonState() : NetMsg() { }
+    explicit NET_SignonState(BitBuffer& buf, ParserState* parser_st);
     virtual ~NET_SignonState() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "NET_SignonState"; }
     virtual NetMsgType getType() const { return NetMsgType::NET_SIGNONSTATE; }
@@ -185,8 +200,10 @@ public:
 class SVC_Print : public NetMsg
 {
 public:
-    explicit SVC_Print(BitBuffer& buf);
+    SVC_Print() : NetMsg() { }
+    explicit SVC_Print(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_Print() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_Print"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_PRINT; }
@@ -197,8 +214,10 @@ public:
 class SVC_ServerInfo : public NetMsg
 {
 public:
-    explicit SVC_ServerInfo(BitBuffer& buf);
+    SVC_ServerInfo() : NetMsg() { }
+    explicit SVC_ServerInfo(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_ServerInfo() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_ServerInfo"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_SERVERINFO; }
@@ -225,8 +244,10 @@ public:
 class SVC_SendTable : public NetMsg
 {
 public:
-    explicit SVC_SendTable(BitBuffer& buf);
+    SVC_SendTable() : NetMsg() { }
+    explicit SVC_SendTable(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_SendTable() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_SendTable"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_SENDTABLE; }
@@ -239,8 +260,10 @@ public:
 class SVC_ClassInfo : public NetMsg
 {
 public:
-    explicit SVC_ClassInfo(BitBuffer& buf);
+    SVC_ClassInfo() : NetMsg() { }
+    explicit SVC_ClassInfo(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_ClassInfo() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_ClassInfo"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_CLASSINFO; }
@@ -253,8 +276,10 @@ public:
 class SVC_SetPause : public NetMsg
 {
 public:
-    explicit SVC_SetPause(BitBuffer& buf);
+    SVC_SetPause() : NetMsg() { }
+    explicit SVC_SetPause(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_SetPause() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_SetPause"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_SETPAUSE; }
@@ -265,42 +290,44 @@ public:
 class SVC_CreateStringTable : public NetMsg
 {
 public:
-    explicit SVC_CreateStringTable(BitBuffer& buf);
+    SVC_CreateStringTable() : NetMsg() { }
+    explicit SVC_CreateStringTable(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_CreateStringTable() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_CreateStringTable"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_CREATESTRINGTABLE; }
 
-    std::string tablename;
-    uint16_t max_entries;
-    int32_t num_entries;
-    bool userdata_fixed_size;
-    uint16_t userdata_size;
-    uint8_t userdata_size_bits;
     bool is_compressed;
-    std::vector<STableEntry> entries;
+    StringTable table;
 };
 
 class SVC_UpdateStringTable : public NetMsg
 {
 public:
-    explicit SVC_UpdateStringTable(BitBuffer& buf);
+    SVC_UpdateStringTable() : NetMsg() { }
+    explicit SVC_UpdateStringTable(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_UpdateStringTable() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_UpdateStringTable"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_UPDATESTRINGTABLE; }
 
     int32_t table_id;
     uint16_t changed_entries;
+    std::vector<uint16_t> changed_indices;
     size_t length;
     std::vector<char> data;
+    StringTable table;
 };
 
 class SVC_VoiceInit : public NetMsg
 {
 public:
-    explicit SVC_VoiceInit(BitBuffer& buf);
+    SVC_VoiceInit() : NetMsg() { }
+    explicit SVC_VoiceInit(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_VoiceInit() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_VoiceInit"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEINIT; }
@@ -312,8 +339,10 @@ public:
 class SVC_VoiceData : public NetMsg
 {
 public:
-    explicit SVC_VoiceData(BitBuffer& buf);
+    SVC_VoiceData() : NetMsg() { }
+    explicit SVC_VoiceData(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_VoiceData() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_VoiceData"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_VOICEDATA; }
@@ -327,8 +356,10 @@ public:
 class SVC_Sounds : public NetMsg
 {
 public:
-    explicit SVC_Sounds(BitBuffer& buf);
+    SVC_Sounds() : NetMsg() { }
+    explicit SVC_Sounds(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_Sounds() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_Sounds"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_SOUNDS; }
@@ -343,8 +374,10 @@ public:
 class SVC_SetView : public NetMsg
 {
 public:
-    explicit SVC_SetView(BitBuffer& buf);
+    SVC_SetView() : NetMsg() { }
+    explicit SVC_SetView(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_SetView() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_SetView"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_SETVIEW; }
@@ -355,8 +388,10 @@ public:
 class SVC_FixAngle : public NetMsg
 {
 public:
-    explicit SVC_FixAngle(BitBuffer& buf);
+    SVC_FixAngle() : NetMsg() { }
+    explicit SVC_FixAngle(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_FixAngle() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_FixAngle"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_FIXANGLE; }
@@ -368,8 +403,10 @@ public:
 class SVC_CrosshairAngle : public NetMsg
 {
 public:
-    explicit SVC_CrosshairAngle(BitBuffer& buf);
+    SVC_CrosshairAngle() : NetMsg() { }
+    explicit SVC_CrosshairAngle(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_CrosshairAngle() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_CrosshairAngle"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_CROSSHAIRANGLE; }
@@ -380,8 +417,10 @@ public:
 class SVC_BSPDecal : public NetMsg
 {
 public:
-    explicit SVC_BSPDecal(BitBuffer& buf);
+    SVC_BSPDecal() : NetMsg() { }
+    explicit SVC_BSPDecal(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_BSPDecal() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_BSPDecal"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_BSPDECAL; }
@@ -396,8 +435,10 @@ public:
 class SVC_UserMessage : public NetMsg
 {
 public:
-    explicit SVC_UserMessage(BitBuffer& buf);
+    SVC_UserMessage() : NetMsg() { }
+    explicit SVC_UserMessage(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_UserMessage() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_UserMessage"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_USERMESSAGE; }
@@ -410,8 +451,10 @@ public:
 class SVC_EntityMessage : public NetMsg
 {
 public:
-    explicit SVC_EntityMessage(BitBuffer& buf);
+    SVC_EntityMessage() : NetMsg() { }
+    explicit SVC_EntityMessage(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_EntityMessage() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_EntityMessage"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_ENTITYMESSAGE; }
@@ -425,8 +468,10 @@ public:
 class SVC_GameEvent : public NetMsg
 {
 public:
-    explicit SVC_GameEvent(BitBuffer& buf);
+    SVC_GameEvent() : NetMsg() { }
+    explicit SVC_GameEvent(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_GameEvent() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_GameEvent"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENT; }
@@ -439,8 +484,10 @@ public:
 class SVC_PacketEntities : public NetMsg
 {
 public:
-    explicit SVC_PacketEntities(BitBuffer& buf);
+    SVC_PacketEntities() : NetMsg() { }
+    explicit SVC_PacketEntities(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_PacketEntities() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_PacketEntities"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_PACKETENTITIES; }
@@ -458,8 +505,10 @@ public:
 class SVC_TempEntities : public NetMsg
 {
 public:
-    explicit SVC_TempEntities(BitBuffer& buf);
+    SVC_TempEntities() : NetMsg() { }
+    explicit SVC_TempEntities(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_TempEntities() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_TempEntities"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_TEMPENTITIES; }
@@ -472,8 +521,10 @@ public:
 class SVC_Prefetch : public NetMsg
 {
 public:
-    explicit SVC_Prefetch(BitBuffer& buf);
+    SVC_Prefetch() : NetMsg() { }
+    explicit SVC_Prefetch(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_Prefetch() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_Prefetch"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_PREFETCH; }
@@ -485,8 +536,10 @@ public:
 class SVC_Menu : public NetMsg
 {
 public:
-    explicit SVC_Menu(BitBuffer& buf);
+    SVC_Menu() : NetMsg() { }
+    explicit SVC_Menu(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_Menu() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_Menu"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_MENU; }
@@ -499,8 +552,10 @@ public:
 class SVC_GameEventList : public NetMsg
 {
 public:
-    explicit SVC_GameEventList(BitBuffer& buf);
+    SVC_GameEventList() : NetMsg() { }
+    explicit SVC_GameEventList(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_GameEventList() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_GameEventList"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_GAMEEVENTLIST; }
@@ -514,8 +569,10 @@ public:
 class SVC_GetCvarValue : public NetMsg
 {
 public:
-    explicit SVC_GetCvarValue(BitBuffer& buf);
+    SVC_GetCvarValue() : NetMsg() { }
+    explicit SVC_GetCvarValue(BitBuffer& buf, ParserState* parser_st);
     virtual ~SVC_GetCvarValue() = default;
+    virtual void readBuffer(BitBuffer& buf, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "SVC_GetCvarValue"; }
     virtual NetMsgType getType() const { return NetMsgType::SVC_GETCVARVALUE; }

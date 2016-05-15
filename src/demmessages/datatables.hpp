@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "demmessage.hpp"
+#include "common.hpp"
 
 struct DataTable;
 struct SendProp;
@@ -51,8 +52,10 @@ enum class SendPropType
 class DataTablesMsg : public DemoMessage
 {
 public:
-    DataTablesMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    DataTablesMsg() : DemoMessage() { }
+    DataTablesMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st);
     virtual ~DataTablesMsg();
+    virtual void readBuffer(const char* data, const size_t data_size, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "DataTablesMsg"; }
     virtual MessageType getType() const { return MessageType::DATATABLES; }

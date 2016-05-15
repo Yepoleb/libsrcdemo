@@ -4,10 +4,16 @@
 
 #include "demmessage.hpp"
 #include "bitbuffer.hpp"
+#include "common.hpp"
 #include "usercmd.hpp"
 
-UserCmdMsg::UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size) :
+UserCmdMsg::UserCmdMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st) :
     DemoMessage(tick)
+{
+    readBuffer(data, data_size, parser_st);
+}
+
+void UserCmdMsg::readBuffer(const char* data, const size_t data_size, ParserState* parser_st)
 {
     BitBuffer buf(data, data_size * 8);
     fields = 0;

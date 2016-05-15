@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string>
 
+#include "common.hpp"
 #include "demmessage.hpp"
 
 const size_t WEAPON_SUBTYPE_BITS = 6;
@@ -24,8 +25,10 @@ const uint16_t USERCMD_MOUSEDY = (1 << 13);
 class UserCmdMsg : public DemoMessage
 {
 public:
-    UserCmdMsg(const int32_t& tick, const char* data, const size_t& data_size);
+    UserCmdMsg() : DemoMessage() { }
+    UserCmdMsg(const int32_t tick, const char* data, const size_t data_size, ParserState* parser_st);
     virtual ~UserCmdMsg() = default;
+    virtual void readBuffer(const char* data, const size_t data_size, ParserState* parser_st);
     virtual std::string toString() const;
     virtual std::string getName() const { return "UserCmdMsg"; }
     virtual MessageType getType() const { return MessageType::USERCMD; }
