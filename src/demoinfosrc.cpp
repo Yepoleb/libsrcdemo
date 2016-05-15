@@ -15,9 +15,9 @@ int main(int argc, char **argv)
         demo.load(argv[1]);
     } else {
 #ifdef ENABLE_DEFAULT_DEMO
-        demo.load(DEMO_PATH);
+        demo.load(DEFAULT_DEMO_PATH);
 #else
-        std::cerr << "Usage: " << argv[0] << " <file.dem>" << std::endl;
+        std::cerr << "Usage: demoinfosrc <file.dem>" << std::endl;
         return 1;
 #endif
     }

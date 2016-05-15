@@ -1,0 +1,11 @@
+#pragma once
+
+// Check CMakeLists.txt if you want to change these options
+
+#cmakedefine ENABLE_DEFAULT_DEMO
+
+#cmakedefine DEBUG_PACKETS
+#cmakedefine DEBUG_TICKS
+
+#define DEFAULT_DEMO_PATH "@DEFAULT_DEMO_PATH@"
+
